@@ -1,0 +1,20 @@
+{
+	"association_rules":
+		[
+			[["bmi"],["cholesterol_total_value"]]
+		
+		],
+	"values_range":{"gender": {"interval": ["M","F"]},
+			        "bmi": {"interval": {"min": 18, "max": 25}},
+			        "cholesterol_total_value": {"interval": {"min": 3, "max": 6.5}}
+},
+	"datatypes":
+       {
+		"birthDate": "timestamp",
+		"gender": "categ",
+		"bmi":"float",
+		"cholesterol_total_value": "float"
+       },
+	"source_type": "batch",
+	"volatility": 350000000
+}

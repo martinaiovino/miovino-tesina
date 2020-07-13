@@ -1,0 +1,42 @@
+{
+	"association_rules":
+		[
+
+				[["cholesterol/ldl/value"], ["totalWhiteCellCount/value"]],
+				[["plateletCount/value"], ["cholesterol/total/value"]],
+				[["fibrinogen/value"], ["cholesterol/ldl/value"]],
+				[["antithrombin/value"], ["cholesterol/total/value"]],
+				[["fibrinogen/value"], ["cholesterol/ldl/value"]]
+
+		],
+	"values_range":
+		{
+                    "antithrombin/value": {"interval": {"min": 85, "max": 117}},
+                    "cholesterol/hdl/value": {"interval": {"min": 0.9, "max": 2.2}},
+                    "cholesterol/ldl/value": {"interval": {"min": 2, "max": 3.4}},
+                    "cholesterol/total/value": {"interval": {"min": 3, "max": 6.5}},
+                    "cholesterol/tryglicerides/value": {"interval": {"min": 0.61, "max": 1.7}},
+                    "fibrinogen/value": {"interval": {"min": 1.5, "max": 4.5}},
+                    "haemoglobin/value": {"interval": {"min": 115, "max": 180}},
+                    "plateletCount/value": {"interval": {"min": 140, "max": 400}},
+                    "prothrombinTime/value": {"interval": {"min": 11, "max": 14}},
+                    "totalWhiteCellCount/value": {"interval": {"min": 3.6, "max": 11}}
+
+
+},
+	"datatypes":
+       {
+		"antithrombin/value": "float",
+		"cholesterol/ldl/value": "float",
+		"cholesterol/total/value": "float",
+		"cholesterol/tryglicerides/value":    "float",
+		"date":    "timestamp",
+		"fibrinogen/value":    "float",
+		"haemoglobin/value":   "float",
+		"plateletCount/value":   "float",
+		"prothrombinTime/value":    "float",
+		"totalWhiteCellCount/value":     "float"
+       },
+	"source_type": "batch",
+	"volatility": 350000000
+}

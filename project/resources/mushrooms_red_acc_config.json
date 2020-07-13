@@ -1,0 +1,96 @@
+{
+	"association_rules":
+		[
+		  [["habitat", "population"], ["odor"]],
+		  [["habitat", "gill-color"], ["odor"]],
+		  [["gill-color", "population"], ["odor"]],
+		  [["habitat"], ["odor"]],
+		  [["population"], ["odor"]],
+		  [["gill-color"],["odor"]],
+		  [["odor", "population"],["habitat"]],
+		  [["odor", "population"], ["gill-color"]],
+		  [["gill-color", "odor"], ["habitat"]],
+		  [["odor"], ["habitat"]],
+		  [["population"],["gill-color"]],
+		  [["population"], ["habitat"]],
+		  [["gill-color"],["habitat"]],
+		  [["habitat","odor"],["gill-color"]],
+		  [["odor"],["gill-color"]],
+		  [["habitat"],["gill-color"]]
+		],
+	"values_range":
+		{
+		"class":
+		    {"interval": ["e", "p"]},
+		"cap-shape":
+		    {"interval": ["f", "k", "b", "s", "c", "x"]},
+		"cap-surface":
+		    {"interval": ["y", "s", "f", "g"]},
+		"cap-color":
+		    {"interval": ["n", "g", "e", "y", "w", "b", "p", "c", "r", "u"]},
+		 "bruises?":
+		    {"interval": ["t", "f"]},
+		 "odor":
+		    {"interval": ["a", "l", "c", "y", "f", "m", "n", "p", "s"]},
+		 "gill-attachment":
+		    {"interval": ["a", "d", "f", "n"]},
+		 "gill-spacing":
+		    {"interval": ["c", "w", "d"]},
+		 "gill-size":
+		    {"interval": ["b", "n"]},
+		 "gill-color":
+		    {"interval": ["k", "n", "b", "h", "g", "r", "o", "p", "u", "e", "w", "y"]},
+		 "stalk-shape":
+		    {"interval": ["e", "t"]},
+		 "stalk-root":
+		    {"interval": ["b", "c", "u", "e", "z", "r"]},
+		 "stalk-surface-above-ring":
+		    {"interval": ["f", "y", "k", "s"]},
+		 "stalk-surface-below-ring":
+		    {"interval": ["f", "y", "k", "s"]},
+		 "stalk-color-above-ring":
+		    {"interval": ["n", "b", "c", "g", "o", "p", "e", "w", "y"]},
+		 "stalk-color-below-ring":
+		    {"interval": ["n", "b", "c", "g", "o", "p", "e", "w", "y"]},
+		 "veil-type":
+		    {"interval": ["p", "u"]},
+		 "veil-color":
+		    {"interval": ["n", "o", "w", "y"]},
+		 "ring-number":
+		    {"interval": ["n", "o", "t"]},
+		 "ring-type":
+		    {"interval": ["c", "e", "f", "l", "n", "p", "s", "z"]},
+		 "spore-print-color":
+		    {"interval": ["k", "n", "b", "h", "r", "o", "u", "w", "y"]},
+		 "population":
+		    {"interval": ["a", "c", "n", "s", "v", "y"]},
+		 "habitat":
+		    {"interval": ["g", "l", "m", "p", "u", "w", "d"]}
+		},
+	"datatypes":
+       {
+        "class": "categ",
+        "cap-shape": "categ",
+        "cap-surface": "categ",
+        "cap-color": "categ",
+        "bruises?": "categ",
+        "gill-attachment": "categ",
+        "gill-spacing": "categ",
+        "gill-size": "categ",
+        "gill-color": "categ",
+        "stalk-shape": "categ",
+        "stalk-root": "categ",
+        "stalk-surface-above-ring": "categ",
+        "stalk-surface-below-ring": "categ",
+        "stalk-color-above-ring": "categ",
+        "stalk-color-below-ring": "categ",
+        "veil-type": "categ",
+        "veil-color": "categ",
+        "ring-number": "categ",
+        "ring-type": "categ",
+        "spore-print-color": "categ",
+        "population": "categ",
+        "habitat": "categ"
+       },
+	"source_type": "batch"
+}
