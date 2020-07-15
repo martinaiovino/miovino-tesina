@@ -2,9 +2,12 @@ package project;
 
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Scanner;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -45,9 +48,11 @@ public class DatasetToConfig {
         	
           	configFile.put("volatility", 350000000); //volatility
           	
+          	//TODO association rules
+          	
           	//print the configuration file as a string
         	System.out.println(configFile.toJSONString());
-        	
+        	saveFile(configFile.toJSONString()); //ask to save file
         } catch (Exception e) { //FileNotFoundException
             e.printStackTrace();
         }
@@ -70,7 +75,7 @@ public class DatasetToConfig {
 						datatypes.put(v, "timestamp");
 						isStream = true;
 					} else { //if it is not a number nor timestamp, it is a string
-						datatypes.put(v, "string");
+						datatypes.put(v, "categ");
 					}
 				}
 				} catch (Exception e) {
@@ -102,10 +107,10 @@ public class DatasetToConfig {
 				interval.put("interval", minmax);
 				extern.put(v.toString(), interval);
 				break;
-			case "string":
+			case "categ":
 				//if it is a float, build the array interval object
-				String[] arrayVal = getArray((String) v, datasetJSONArray);
-				interval.put("interval", Arrays.toString(arrayVal));
+				JSONArray arrayVal = getArray((String) v, datasetJSONArray);
+				interval.put("interval", arrayVal);
 				extern.put(v.toString(), interval);
 				break;
 			}
@@ -143,7 +148,8 @@ public class DatasetToConfig {
 	}
 	
 	// Method to get the array interval of a values_range object element
-	public static String[] getArray (String key, JSONArray dataset) {
+	@SuppressWarnings("unchecked")
+	public static JSONArray getArray (String key, JSONArray dataset) {
 		String[] array = new String[dataset.size()]; //define an array
 		for (int i = 0; i < dataset.size(); i++) { //iterate inside the dataset
 			JSONObject datasetObji = (JSONObject) dataset.get(i); //get the i-th object of the array of objects
@@ -151,7 +157,11 @@ public class DatasetToConfig {
 		}
 		//only take the distinct values of the array
 		String[] unique = Arrays.stream(array).distinct().toArray(String[]::new);
-		return unique;
+		JSONArray toReturn = new JSONArray();
+		for (String elem : unique) {
+			toReturn.add(elem);
+		}
+		return toReturn;
 	}
 	
 	// Method to get the min-max interval of a values_range object element
@@ -179,5 +189,28 @@ public class DatasetToConfig {
 			}
 		}
 		return minmax;
+	}
+	
+	public static void saveFile (String jsonContent) {
+		@SuppressWarnings("resource")
+		Scanner keyboard = new Scanner(System.in);
+    	System.out.println("Do you want to save the generated config file? Press y to accept, press any other key to exit");
+    	String response = keyboard.next();
+    	if (response.equals("y")) {
+    	try {
+    		System.out.println("Type the file name: ");
+        	String filen = keyboard.next();
+            // Constructs a FileWriter given a file name, using the platform's default charset
+            FileWriter file = new FileWriter("resources/" + filen + ".json");
+            file.write(jsonContent);
+            file.flush();
+            file.close();
+            System.out.println("File saved! Refresh the resources folder");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    	} else {
+    		System.out.println("Bye");
+    	}
 	}
 }
