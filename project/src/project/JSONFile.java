@@ -2,14 +2,18 @@ package project;
 
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.json.*;
 
 public class JSONFile {
 	
@@ -19,6 +23,7 @@ public class JSONFile {
 	static List<Boolean> arrayBoolFloat;
 	static List<Boolean> arrayBoolNotNull;
 	static List<Double> accuracyDistance;
+	static double consistency_evaluation,completeness_missing,accuracy_evaluation_boolean_float, timeliness_evaluation, accuracy_evaluation_boolean_categ;
 	
 	/* Method to read a json file. It returns an object.
 	 * This method will be used for reading both configuration and dataset files. */
@@ -131,13 +136,50 @@ public class JSONFile {
 	}
 	
 	// Timeliness
-	public static void timeliness (long volatility) {
+	public static double timeliness (long volatility) {
 		System.out.println("TIMELINESS: " + Math.max(0, 1 - (dataFileDiff/volatility)));
+		return Math.max(0, 1 - (dataFileDiff/volatility));
 	}
 	
-	// Consistency
-	public static void consistency () {
-		//TODO
+	@SuppressWarnings("unchecked")
+	public static String buildDQEvaluator(String sourceType) {
+		JSONObject DQEvaluator = new JSONObject(); //DQEvaluator
+    	
+		JSONObject global = new JSONObject();
+    	global.put("consistency", consistency_evaluation);
+    	global.put("completeness_missing", completeness_missing);
+    	
+    	JSONObject attribute = new JSONObject();
+    	JSONObject accuracy = new JSONObject();
+    	accuracy.put("accuracy", accuracy_evaluation_boolean_float);
+    	attribute.put("float", accuracy);
+    	
+    	JSONObject timeliness = new JSONObject();
+    	timeliness.put("timeliness", timeliness_evaluation);
+    	attribute.put("timestamp", timeliness);
+    	
+    	JSONObject accuracyj = new JSONObject();
+    	accuracyj.put("accuracy", accuracy_evaluation_boolean_categ);
+    	attribute.put("categ", accuracyj);
+    	
+    	JSONObject sourcetype = new JSONObject();
+    	sourcetype.put("attribute", attribute);
+    	sourcetype.put("global", global);
+    	DQEvaluator.put(sourceType, sourcetype);
+    	
+    	System.out.println(DQEvaluator.toString());
+		
+    	try {
+            // Constructs a FileWriter given a file name, using the platform's default charset
+            FileWriter file = new FileWriter("resources/d.json");
+            file.write(DQEvaluator.toJSONString());
+            file.flush();
+            file.close();
+            System.out.println("File saved! Refresh the resources folder");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    	return DQEvaluator.toJSONString();
 	}
 	
 	/*----------------      Methods for the stream metrics        ----------------*/
@@ -176,24 +218,25 @@ public class JSONFile {
 		return accuracy;
 	}
 	
-	public static void timeliness (JSONObject configJSONObject, JSONArray datasetJSONArray) {
+	public static double timeliness (JSONObject configJSONObject, JSONArray datasetJSONArray) {
 		// From the configuration file, get the datatypes object
-				JSONObject timestampVal = (JSONObject) configJSONObject.get("datatypes");
-				for (Object v : timestampVal.keySet()) { // iterate inside the datatypes
-					//System.out.println("key: " + v); // key
-					String subval = (String) timestampVal.get(v); // value
-					//System.out.println("value: " + subval);
-					try {
-					if (subval.equals("timestamp")) { // if a value of type timestamp is found
-						List<Long> currencies = new ArrayList<>();
-						long volatility = (long) configJSONObject.get("volatility");
-						// iterate in the dataset
-						for (int i = 0; i < datasetJSONArray.size(); i++) {
-							JSONObject currentElem = (JSONObject) datasetJSONArray.get(i);
-								//get the date value of the i-th element of the dataset
-								Date date = new SimpleDateFormat("yyyy-MM-dd").parse(currentElem.get(v).toString());
-								long millis = date.getTime(); // milliseconds of the timestamp i-th value
-								currencies.add(nowMillis-millis); // add to the array of currencies nowMillis-millis
+		double timelness = 0;
+		JSONObject timestampVal = (JSONObject) configJSONObject.get("datatypes");
+		for (Object v : timestampVal.keySet()) { // iterate inside the datatypes
+			//System.out.println("key: " + v); // key
+			String subval = (String) timestampVal.get(v); // value
+			//System.out.println("value: " + subval);
+			try {
+				if (subval.equals("timestamp")) { // if a value of type timestamp is found
+					List<Long> currencies = new ArrayList<>();
+					long volatility = (long) configJSONObject.get("volatility");
+					// iterate in the dataset
+					for (int i = 0; i < datasetJSONArray.size(); i++) {
+						JSONObject currentElem = (JSONObject) datasetJSONArray.get(i);
+						//get the date value of the i-th element of the dataset
+						Date date = new SimpleDateFormat("yyyy-MM-dd").parse(currentElem.get(v).toString());
+						long millis = date.getTime(); // milliseconds of the timestamp i-th value
+						currencies.add(nowMillis-millis); // add to the array of currencies nowMillis-millis
 						}
 						List<Long> timeliness = new ArrayList<>();
 						long sum = 0;
@@ -202,12 +245,14 @@ public class JSONFile {
 							sum += timeliness.get(i);
 						}
 						System.out.println("TIMELINESS: " + sum/timeliness.size());
+						timelness = sum/timeliness.size();
 					}
 					} catch (Exception e) {
 						// Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
+				return timelness;
 	}
 			
 	/* --------------------    Calculate batch metrics    -------------------- */
@@ -239,8 +284,7 @@ public class JSONFile {
 					} catch (NullPointerException e) {
 						arrayBoolNotNull.add(false);
 					}
-				}
-				
+				}	
 			} else { // case 2: interval is an array of values
 				//System.out.println(" ARRAY");
 				String arrayToString = subval.get("interval").toString();
@@ -260,14 +304,14 @@ public class JSONFile {
 		}
 		
 		// Computing the metrics
-		accuracy_float_categ_completeness(arrayBoolCateg, "ACCURACY_CATEG"); // Accuracy category
-		accuracy_float_categ_completeness(arrayBoolFloat, "ACCURACY_FLOAT"); // Accuracy float
-		accuracy_float_categ_completeness(arrayBoolNotNull, "COMPLETENESS_MISSING"); // Completeness missing
+		accuracy_evaluation_boolean_categ = accuracy_float_categ_completeness(arrayBoolCateg, "ACCURACY_CATEG"); // Accuracy category
+		accuracy_evaluation_boolean_float = accuracy_float_categ_completeness(arrayBoolFloat, "ACCURACY_FLOAT"); // Accuracy float
+		completeness_missing = accuracy_float_categ_completeness(arrayBoolNotNull, "COMPLETENESS_MISSING"); // Completeness missing
 		accuracy_evaluation_distance(); // Accuracy evaluation distance
 		accuracy(); // Accuracy (generic)
 		try {
 			long volatility = (long) configJSONObject.get("volatility"); // Volatility
-			timeliness(volatility);
+			timeliness_evaluation = timeliness(volatility);
 		} catch (Exception e) {
 			System.out.println("NO VOLATILITY");
 		}
@@ -348,11 +392,11 @@ public class JSONFile {
 		}
 		System.out.println("");
 		// compute the stream metrics
-		accuracy_categ_float_stream(number_of_windows, accuracy_float_subsets, "STREAM ACCURACY_FLOAT");
-		accuracy_categ_float_stream(number_of_windows, accuracy_categ_subsets, "STREAM ACCURACY_CATEG");
-		accuracy_categ_float_stream(number_of_windows, completeness_subsets, "STREAM COMPLETENESS");
+		accuracy_evaluation_boolean_float = accuracy_categ_float_stream(number_of_windows, accuracy_float_subsets, "STREAM ACCURACY_FLOAT");
+		accuracy_evaluation_boolean_categ = accuracy_categ_float_stream(number_of_windows, accuracy_categ_subsets, "STREAM ACCURACY_CATEG");
+		completeness_missing = accuracy_categ_float_stream(number_of_windows, completeness_subsets, "STREAM COMPLETENESS");
 		
-		timeliness(configJSONObject, datasetJSONArray);		
+		timeliness_evaluation = timeliness(configJSONObject, datasetJSONArray);
 	}
 	
 	/*----------------         MAIN             ----------------*/
@@ -362,6 +406,7 @@ public class JSONFile {
 		// Read the dataset and configuration files
 		Object returnedDataset = readFile(fileName + ".json"); // dataset object
 		Object returnedConfig = readFile(fileName + "_config.json"); //configuration file object
+		String result = "Unknown data type";
 		
 		//Check whether the two objects are not null
 		if (returnedDataset != null && returnedConfig != null) {
@@ -370,20 +415,104 @@ public class JSONFile {
 			
 			JSONObject configJSONObject = (JSONObject) returnedConfig; // configuration JSON Object
 			
+			prepare_consistency(configJSONObject, datasetJSONArray);
+			
 			//Check the source type
 			String sourceType = (String) configJSONObject.get("source_type");
 			//Source type can be either batch or stream
 			if (sourceType.equals("batch")) {
 				calculateBatchMetrics(configJSONObject, datasetJSONArray); 
+				result = buildDQEvaluator("batch");
 			} else {
 				if (sourceType.equals("stream")) {
 					calculateStreamMetrics(configJSONObject, datasetJSONArray);
-				} else {
-					System.out.println("Unknown data type");
+					result = buildDQEvaluator("stream");
 				}
 			}
+			System.out.println(result);
 		} else {
 			System.out.println("Files not found");
 		}
 	}
+	
+	/************************************************************************************
+	 * **********************************************************************************
+	 * **********************************************************************************/
+	public static void prepare_consistency (JSONObject configJSONObject, JSONArray dataset) {
+		JSONArray associationRules = (JSONArray) configJSONObject.get("association_rules");
+		ArrayList<Double> consistency = new ArrayList<>();
+		//System.out.println(associationRules.size());
+		JSONObject valuesRangeObj = (JSONObject) configJSONObject.get("values_range");
+		for (Object x : associationRules) {
+			JSONArray y = (JSONArray) x;
+			Boolean[] array = new Boolean[dataset.size()];
+			Arrays.fill(array, true);
+			for (Object z : y) {
+				String elem = z.toString().substring(2, z.toString().length()-2).replace("\\", "");
+				//System.out.println("y: " + y.toString() + "z " + elem);
+				JSONObject valuesRange = (JSONObject) valuesRangeObj.get(elem);
+				if(valuesRange.get("interval") instanceof JSONObject) {
+					//MIN-MAX
+					JSONObject subv = (JSONObject) valuesRange.get("interval");
+					Double minvalue = Double.parseDouble(subv.get("min").toString()); //minimum value
+					Double maxvalue = Double.parseDouble(subv.get("max").toString()); //maximum value
+					for (int i = 0; i < dataset.size(); i++) {
+						try {
+						JSONObject element = (JSONObject) dataset.get(i);
+						if (Double.parseDouble(element.get(elem).toString()) >= minvalue && Double.parseDouble(element.get(elem).toString()) <= maxvalue) {
+							array[i] = (array[i] == true);
+						} else {
+							array[i] = (array[i] == false);
+						}
+						} catch(Exception e) {
+							array[i] = false;
+						}
+					}
+				} else {
+					//ARRAY
+					String arrayToString = valuesRange.get("interval").toString();
+					String arrayEdits = arrayToString.substring(1, arrayToString.length() - 1).replace("\"", "");
+					String[] vRange = arrayEdits.split(",");
+					for (int i = 0; i < dataset.size(); i++) {
+						try {
+							JSONObject element = (JSONObject) dataset.get(i);
+							String vali = element.get(elem).toString();
+							Boolean found = false;
+							for (String n : vRange) {
+					            if (n.contentEquals(vali)) {
+					                found = true;
+					            }
+					        }
+							array[i] = (array[i] && found);
+						} catch (Exception e) {
+							array[i] = false;
+						}
+					}
+				}
+				/*if(elem.contains("\",\"")) {
+					String[] subelems = elem.split("\",\"");
+					for (String i : subelems) {
+						System.out.println(i);
+					}
+				}*/
+			}
+			int correct = 0;
+			for (int i = 0; i < array.length; i++) {
+				if (array[i]) {
+					correct++;
+				}
+			}
+			consistency.add((double) correct/array.length);
+			//System.out.println((double) correct/array.length);
+		}
+		double sum = 0;
+		for (int i = 0; i < consistency.size(); i++) {
+			sum += consistency.get(i);
+		}
+		consistency_evaluation = sum/consistency.size();
+		System.out.println("CONSISTENCY: " + consistency_evaluation);
+	}
+	/************************************************************************************
+	 * **********************************************************************************
+	 * **********************************************************************************/
 }

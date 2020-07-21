@@ -16,6 +16,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.awt.event.ActionEvent;
+import java.awt.TextArea;
 
 public class MainFrame {
 
@@ -50,14 +51,14 @@ public class MainFrame {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void initialize() {
 		frame = new JFrame();
-		frame.setBounds(100, 100, 450, 300);
+		frame.setBounds(100, 100, 685, 410);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
 		JButton btnNewButton = new JButton("Analyse");
 		btnNewButton.setFont(new Font("Calibri", Font.PLAIN, 16));
 		btnNewButton.setBackground(Color.LIGHT_GRAY);
-		btnNewButton.setBounds(153, 199, 115, 29);
+		btnNewButton.setBounds(250, 15, 115, 29);
 		frame.getContentPane().add(btnNewButton);
 		
 		//get the available files
@@ -78,6 +79,12 @@ public class MainFrame {
 		comboBox.setBounds(15, 16, 207, 26);
 		frame.getContentPane().add(comboBox);
 		
+		TextArea textArea = new TextArea();
+		textArea.setFont(new Font("Calibri", Font.PLAIN, 12));
+		textArea.setEditable(false);
+		textArea.setBounds(15, 71, 638, 273);
+		frame.getContentPane().add(textArea);
+				
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				String selectedOption = (String) comboBox.getSelectedItem().toString();
@@ -95,15 +102,17 @@ public class MainFrame {
 					
 					//Check the source type
 					String sourceType = (String) configJSONObject.get("source_type");
+					String result = "Unknown data type";
 					if (sourceType.equals("batch")) {
-						JSONFile.calculateBatchMetrics(configJSONObject, datasetJSONArray); 
+						JSONFile.calculateBatchMetrics(configJSONObject, datasetJSONArray);
+						result = JSONFile.buildDQEvaluator("batch");
 					} else {
 						if (sourceType.equals("stream")) {
-							
-						} else {
-							System.out.println("Unknown data type");
+							JSONFile.calculateStreamMetrics(configJSONObject, datasetJSONArray);
+							result = JSONFile.buildDQEvaluator("stream");
 						}
 					}
+					textArea.setText(result);
 				} else {
 					System.out.println("Files not found");
 				}
