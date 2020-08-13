@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.web.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.layout.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+
+
+<ScrollPane prefHeight="599.0" prefWidth="632.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="project.MainGUI">
+   <content>
+      <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="602.0" prefWidth="632.0">
+         <children>
+            <Pane layoutX="13.0" layoutY="14.0" prefHeight="92.0" prefWidth="587.0" style="-fx-border-style: solid;">
+               <children>
+                  <Text layoutX="14.0" layoutY="25.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Select an option:">
+                     <font>
+                        <Font name="Calibri" size="14.0" />
+                     </font>
+                  </Text>
+                  <RadioButton fx:id="rb_search" layoutX="14.0" layoutY="29.0" mnemonicParsing="false" onAction="#radioExistingSelected" prefHeight="30.0" prefWidth="173.0" text="Search available datasets">
+                     <font>
+                        <Font name="Tahoma" size="12.0" />
+                     </font>
+                  </RadioButton>
+                  <RadioButton fx:id="rb_upload" layoutX="13.0" layoutY="59.0" mnemonicParsing="false" onAction="#radioUploadSelected" prefHeight="30.0" prefWidth="173.0" text="Upload a dataset">
+                     <font>
+                        <Font name="Tahoma" size="12.0" />
+                     </font>
+                  </RadioButton>
+               </children>
+            </Pane>
+            <Pane fx:id="upload_pane" layoutX="13.0" layoutY="116.0" prefHeight="106.0" prefWidth="588.0" style="-fx-border-style: solid;" visible="false">
+               <children>
+                  <Button fx:id="upload_dataset" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#uploadDatasetBtn" prefHeight="33.0" prefWidth="169.0" text="Upload dataset...">
+                     <font>
+                        <Font size="12.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="upload_config" layoutX="14.0" layoutY="53.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="169.0" text="Upload config file...">
+                     <font>
+                        <Font size="12.0" />
+                     </font>
+                  </Button>
+                  <Text layoutX="201.0" layoutY="80.0" strokeType="OUTSIDE" strokeWidth="0.0" text="or" wrappingWidth="33.8046875">
+                     <font>
+                        <Font size="12.0" />
+                     </font>
+                  </Text>
+                  <Button fx:id="generate_config" layoutX="235.0" layoutY="53.0" mnemonicParsing="false" onAction="#clickGenerateConfig" prefHeight="33.0" prefWidth="169.0" text="Generate config file">
+                     <font>
+                        <Font size="12.0" />
+                     </font>
+                  </Button>
+                  <Hyperlink fx:id="selected_dataset" layoutX="190.0" layoutY="27.0" onAction="#openSelectedDaset" visible="false">
+                     <font>
+                        <Font name="Calibri" size="12.0" />
+                     </font>
+                  </Hyperlink>
+               </children>
+            </Pane>
+            <TextArea fx:id="text_area" layoutX="13.0" layoutY="233.0" prefHeight="291.0" prefWidth="589.0" visible="false" />
+            <Button fx:id="evalaluate_btn" layoutX="13.0" layoutY="532.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="589.0" text="Evaluate the dataset" visible="false">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
+         </children>
+      </AnchorPane>
+   </content>
+</ScrollPane>
