@@ -26,17 +26,17 @@ public class JSONFile {
 	
 	/* Method to read a json file. It returns an object.
 	 * This method will be used for reading both configuration and dataset files. */
-	public static Object readFile(String fileName) {
-		System.out.println("File to analyse: " + fileName);
+	public static Object readFile(String filePath) {
+		//System.out.println("File to analyse: " + fileName);
         try
         {
-        	File f = new File("resources/" + fileName); // look for the file
+        	File f = new File(filePath); // look for the file
         	System.out.println(f.getAbsolutePath());
         	JSONParser jsonParser = new JSONParser(); // parser
         	FileReader reader = new FileReader(f.getAbsolutePath());
             Object fileObject = jsonParser.parse(reader);
             
-            if(f.exists() && !fileName.endsWith("_config.json")) { // if there is a configuration file
+            if(f.exists() && !filePath.endsWith("_config.json")) { // if there is a configuration file
             	long lastModifiedMillis = f.lastModified(); // get the last modified date in milliseconds
             	nowMillis = System.currentTimeMillis(); // current milliseconds
             	dataFileDiff = nowMillis - lastModifiedMillis; // current milliseconds - last modified milliseconds
@@ -400,11 +400,10 @@ public class JSONFile {
 	
 	/*----------------         MAIN             ----------------*/
 	public static void main (String[] args) {
-		String fileName = "blood_analysis"; // File name
 		
 		// Read the dataset and configuration files
-		Object returnedDataset = readFile(fileName + ".json"); // dataset object
-		Object returnedConfig = readFile(fileName + "_config.json"); //configuration file object
+		Object returnedDataset = readFile("resources/blood_analysis.json"); // dataset object
+		Object returnedConfig = readFile("resources/blood_analysis_config.json"); //configuration file object
 		String result = "Unknown data type";
 		
 		//Check whether the two objects are not null

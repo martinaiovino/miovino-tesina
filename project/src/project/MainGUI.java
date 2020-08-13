@@ -33,8 +33,10 @@ import javafx.stage.Stage;
 
 public class MainGUI extends Application {
 	private static Pane upload_pane = new Pane();
+	private static TextArea txtArea = new TextArea();	
 	private Desktop desktop = Desktop.getDesktop();
 	String datasetPath = "";
+	String configPath = "";
 	
 	@Override
 	public void start(Stage stage) {
@@ -54,6 +56,7 @@ public class MainGUI extends Application {
 	        radio_importdataset.setToggleGroup(group);
 	        
 	        upload_pane = (Pane) scene.lookup("#upload_pane");
+	        txtArea = (TextArea) scene.lookup("#text_area");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -66,28 +69,31 @@ public class MainGUI extends Application {
 	
 	@FXML protected void radioExistingSelected(ActionEvent event) throws IOException {
 		upload_pane.setVisible(false);
+		txtArea.setVisible(false);
     }
 	
 	@FXML protected void radioUploadSelected(ActionEvent event) {
 		upload_pane.setVisible(true);
+		txtArea.setVisible(false);
     }
 	
 	@FXML protected void uploadDatasetBtn(ActionEvent event) {
-		Node node = (Node) event.getSource();
-        final FileChooser fileChooser = new FileChooser();
-        String currentPath = Paths.get(".").toAbsolutePath().normalize().toString();
-        fileChooser.setInitialDirectory(new File(currentPath + "/resources"));
-		File file = fileChooser.showOpenDialog(node.getScene().getWindow());
-        if (file != null) {
-            Hyperlink selectedDataset = (Hyperlink) node.getScene().lookup("#selected_dataset");
-            selectedDataset.setVisible(true);
-            datasetPath = file.getPath();
-            selectedDataset.setText("Open " + file.getName());
-        }
+		datasetPath = selectFile(event, "selected_dataset");
+		checkDatasetConfig(event);
+    }
+	
+	@FXML protected void uploadConfigBtn(ActionEvent event) {
+		configPath = selectFile(event, "selected_config");
+		checkDatasetConfig(event);
     }
 	
 	@FXML protected void openSelectedDaset(ActionEvent event) throws IOException {
 		File file = new File(datasetPath);
+		desktop.open(file);
+    }
+	
+	@FXML protected void openSelectedConfig(ActionEvent event) throws IOException {
+		File file = new File(configPath);
 		desktop.open(file);
     }
 	
@@ -125,13 +131,80 @@ public class MainGUI extends Application {
           	JsonElement je = jp.parse(configFile.toString());
           	String prettyJsonString = gson.toJson(je);
           	
-          	Node node = (Node) event.getSource();
-          	TextArea txtArea = (TextArea) node.getScene().lookup("#text_area");
+          	//Node node = (Node) event.getSource();
+          	//TextArea txtArea = (TextArea) node.getScene().lookup("#text_area");
           	txtArea.setVisible(true);
         	txtArea.setText(prettyJsonString);
         	//DatasetToConfig.saveFile(configFile.toJSONString()); //ask to save file
         } catch (Exception e) { //FileNotFoundException
             e.printStackTrace();
         }
+	}
+	
+	protected String selectFile(ActionEvent event, String hyperId) {
+		String returnPath = "";
+		Node node = (Node) event.getSource();
+        final FileChooser fileChooser = new FileChooser();
+        String currentPath = Paths.get(".").toAbsolutePath().normalize().toString();
+        fileChooser.setInitialDirectory(new File(currentPath + "/resources"));
+		File file = fileChooser.showOpenDialog(node.getScene().getWindow());
+        if (file != null) {
+            Hyperlink selectedDataset = (Hyperlink) node.getScene().lookup("#" + hyperId);
+            selectedDataset.setVisible(true);
+            returnPath = file.getPath();
+            selectedDataset.setText(file.getName());
+        }
+        return returnPath;
+	}
+	
+	protected void checkDatasetConfig(ActionEvent event) {
+		Node node = (Node) event.getSource();
+		if (datasetPath != "" && configPath != "") {
+			node.getScene().lookup("#evalaluate_btn").setVisible(true);
+		} else {
+			node.getScene().lookup("#evalaluate_btn").setVisible(false);
+		}
+	}
+	
+	@FXML protected void evaluateDataset (ActionEvent event) {		
+		// Read the dataset and configuration files
+		Object returnedDataset = JSONFile.readFile(datasetPath); // dataset object
+		Object returnedConfig = JSONFile.readFile(configPath); //configuration file object
+		String result = "Unknown data type";
+		
+		//Check whether the two objects are not null
+		if (returnedDataset != null && returnedConfig != null) {
+			JSONArray datasetJSONArray = (JSONArray) returnedDataset; // dataset JSON Array
+			System.out.println("Total number of data: " + datasetJSONArray.size() + "\n"); // total number of data
+			
+			JSONObject configJSONObject = (JSONObject) returnedConfig; // configuration JSON Object
+			
+			JSONFile.prepare_consistency(configJSONObject, datasetJSONArray);
+			
+			//Check the source type
+			String sourceType = (String) configJSONObject.get("source_type");
+			//Source type can be either batch or stream
+			if (sourceType.equals("batch")) {
+				JSONFile.calculateBatchMetrics(configJSONObject, datasetJSONArray); 
+				result = JSONFile.buildDQEvaluator("batch");
+			} else {
+				if (sourceType.equals("stream")) {
+					JSONFile.calculateStreamMetrics(configJSONObject, datasetJSONArray);
+					result = JSONFile.buildDQEvaluator("stream");
+				}
+			}
+			Gson gson = new GsonBuilder().setPrettyPrinting().create();
+          	JsonParser jp = new JsonParser();
+          	JsonElement je = jp.parse(result.toString());
+          	String prettyJsonString = gson.toJson(je);
+          	
+          	//Node node = (Node) event.getSource();
+          	//TextArea txtArea = (TextArea) node.getScene().lookup("#text_area");
+          	txtArea.setVisible(true);
+        	txtArea.setText(prettyJsonString);
+			//System.out.println(result);
+		} else {
+			System.out.println("Files not found");
+		}
 	}
 }
