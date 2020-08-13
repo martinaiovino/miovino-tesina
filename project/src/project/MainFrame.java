@@ -17,6 +17,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.awt.event.ActionEvent;
 import java.awt.TextArea;
+import javax.swing.JRadioButton;
+import java.awt.Component;
+import javax.swing.Box;
 
 public class MainFrame {
 
@@ -51,14 +54,14 @@ public class MainFrame {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void initialize() {
 		frame = new JFrame();
-		frame.setBounds(100, 100, 685, 410);
+		frame.setBounds(100, 100, 961, 579);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
 		JButton btnNewButton = new JButton("Analyse");
-		btnNewButton.setFont(new Font("Calibri", Font.PLAIN, 16));
-		btnNewButton.setBackground(Color.LIGHT_GRAY);
-		btnNewButton.setBounds(250, 15, 115, 29);
+		btnNewButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		btnNewButton.setBackground(Color.WHITE);
+		btnNewButton.setBounds(299, 52, 115, 29);
 		frame.getContentPane().add(btnNewButton);
 		
 		//get the available files
@@ -73,17 +76,27 @@ public class MainFrame {
 		}
 		
 		JComboBox comboBox = new JComboBox(availableFiles.toArray());
-		comboBox.setFont(new Font("Calibri", Font.PLAIN, 16));
+		comboBox.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		comboBox.setForeground(new Color(0, 0, 0));
 		comboBox.setBackground(new Color(255, 255, 255));
-		comboBox.setBounds(15, 16, 207, 26);
+		comboBox.setBounds(15, 53, 269, 26);
 		frame.getContentPane().add(comboBox);
 		
 		TextArea textArea = new TextArea();
 		textArea.setFont(new Font("Calibri", Font.PLAIN, 12));
 		textArea.setEditable(false);
-		textArea.setBounds(15, 71, 638, 273);
+		textArea.setBounds(10, 318, 919, 178);
 		frame.getContentPane().add(textArea);
+		
+		JRadioButton rdbtnNewRadioButton = new JRadioButton("New radio button");
+		rdbtnNewRadioButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		rdbtnNewRadioButton.setBounds(11, 12, 155, 29);
+		frame.getContentPane().add(rdbtnNewRadioButton);
+		
+		JRadioButton rdbtnNewRadioButton_1 = new JRadioButton("New radio button");
+		rdbtnNewRadioButton_1.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		rdbtnNewRadioButton_1.setBounds(15, 112, 155, 29);
+		frame.getContentPane().add(rdbtnNewRadioButton_1);
 				
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {

@@ -13,6 +13,11 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+
 public class DatasetToConfig {
 	
 	static Boolean isStream = false; //boolean for the source type
@@ -51,8 +56,12 @@ public class DatasetToConfig {
           	//TODO association rules
           	
           	//print the configuration file as a string
-        	System.out.println(configFile.toJSONString());
-        	saveFile(configFile.toJSONString()); //ask to save file
+          	Gson gson = new GsonBuilder().setPrettyPrinting().create();
+          	JsonParser jp = new JsonParser();
+          	JsonElement je = jp.parse(configFile.toString());
+          	String prettyJsonString = gson.toJson(je);
+        	System.out.println(prettyJsonString);
+        	saveFile(prettyJsonString); //ask to save file
         } catch (Exception e) { //FileNotFoundException
             e.printStackTrace();
         }

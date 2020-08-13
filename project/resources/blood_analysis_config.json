@@ -37,6 +37,6 @@
 		"prothrombinTime/value":    "float",
 		"totalWhiteCellCount/value":     "float"
        },
-	"source_type": "batch",
+	"source_type": "stream",
 	"volatility": 350000000
 }
