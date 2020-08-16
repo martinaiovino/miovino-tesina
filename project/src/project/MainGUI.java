@@ -3,6 +3,7 @@ package project;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Paths;
 
@@ -23,6 +24,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Hyperlink;
+import javafx.scene.control.Labeled;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.ToggleGroup;
@@ -85,6 +87,8 @@ public class MainGUI extends Application {
 	@FXML protected void uploadConfigBtn(ActionEvent event) {
 		configPath = selectFile(event, "selected_config");
 		checkDatasetConfig(event);
+		txtArea.setText("");
+		txtArea.setVisible(false);
     }
 	
 	@FXML protected void openSelectedDaset(ActionEvent event) throws IOException {
@@ -101,6 +105,10 @@ public class MainGUI extends Application {
 	@FXML protected void clickGenerateConfig(ActionEvent event) {
 		JSONArray datasetFile = new JSONArray();
 		
+		Node node = (Node) event.getSource();
+        ((Hyperlink) node.getScene().lookup("#selected_config")).setText("");
+        node.getScene().lookup("#save_btn").setVisible(true);
+
 		try
         {
 			//read the dataset file
@@ -166,6 +174,35 @@ public class MainGUI extends Application {
 		}
 	}
 	
+	@FXML protected void saveBtn (ActionEvent event) throws IOException {
+		Node node = (Node) event.getSource();
+        final FileChooser fileChooser = new FileChooser();
+        String currentPath = Paths.get(".").toAbsolutePath().normalize().toString();
+        fileChooser.setInitialDirectory(new File(currentPath + "/resources"));
+        
+        //Set extension filter
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("JSON file (*.json)", "*.json");
+        fileChooser.getExtensionFilters().add(extFilter);
+        
+		File file = fileChooser.showSaveDialog(node.getScene().getWindow());
+        if (file != null) {
+        	FileWriter fileWriter = null;
+            
+            fileWriter = new FileWriter(file);
+            fileWriter.write(txtArea.getText());
+            fileWriter.close();
+            
+            Hyperlink hyperselected = (Hyperlink) node.getScene().lookup("#selected_config");
+            hyperselected.setText(file.getName());
+            hyperselected.setVisible(true);
+            configPath = file.getPath();
+            
+            node.getScene().lookup("#evalaluate_btn").setVisible(true);
+            node.getScene().lookup("#save_btn").setVisible(false);
+            txtArea.setVisible(false);
+        }
+	}
+	
 	@FXML protected void evaluateDataset (ActionEvent event) {		
 		// Read the dataset and configuration files
 		Object returnedDataset = JSONFile.readFile(datasetPath); // dataset object
@@ -202,6 +239,8 @@ public class MainGUI extends Application {
           	//TextArea txtArea = (TextArea) node.getScene().lookup("#text_area");
           	txtArea.setVisible(true);
         	txtArea.setText(prettyJsonString);
+        	Node node = (Node) event.getSource();
+        	node.getScene().lookup("#save_btn").setVisible(true);
 			//System.out.println(result);
 		} else {
 			System.out.println("Files not found");

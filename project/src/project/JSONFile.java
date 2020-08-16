@@ -167,7 +167,7 @@ public class JSONFile {
     	DQEvaluator.put(sourceType, sourcetype);
     	
     	System.out.println(DQEvaluator.toString());
-		
+		/*
     	try {
             // Constructs a FileWriter given a file name, using the platform's default charset
             FileWriter file = new FileWriter("resources/d.json");
@@ -178,6 +178,7 @@ public class JSONFile {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        */
     	return DQEvaluator.toJSONString();
 	}
 	
@@ -437,6 +438,7 @@ public class JSONFile {
 	 * **********************************************************************************
 	 * **********************************************************************************/
 	public static void prepare_consistency (JSONObject configJSONObject, JSONArray dataset) {
+		try {
 		JSONArray associationRules = (JSONArray) configJSONObject.get("association_rules");
 		ArrayList<Double> consistency = new ArrayList<>();
 		//System.out.println(associationRules.size());
@@ -509,6 +511,9 @@ public class JSONFile {
 		}
 		consistency_evaluation = sum/consistency.size();
 		System.out.println("CONSISTENCY: " + consistency_evaluation);
+		} catch (Exception e) {
+			System.out.println("Association rules not found");
+		}
 	}
 	/************************************************************************************
 	 * **********************************************************************************
