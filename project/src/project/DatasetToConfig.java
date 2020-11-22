@@ -24,7 +24,7 @@ public class DatasetToConfig {
 	
 	@SuppressWarnings("unchecked")
 	public static void main (String[] args) {
-		String fileName = "getNutritionalData.json"; // File name
+		String fileName = "collections.json"; // File name
 		JSONArray datasetFile = new JSONArray();
 		
 		try
@@ -39,7 +39,8 @@ public class DatasetToConfig {
         	//start building the content of the derived configuration file
         	JSONObject configFile = new JSONObject(); //config file
         	
-        	JSONObject dt = buildDataTypes(datasetFile); //datatypes
+        	String dateFormat = "yyyy-MM-dd";
+        	JSONObject dt = buildDataTypes(datasetFile, dateFormat); //datatypes
         	configFile.put("datatypes", dt);
         	
         	JSONObject vr = buildValuesRange(dt, datasetFile); //values range
@@ -69,31 +70,50 @@ public class DatasetToConfig {
 	
 	// Method to build the datatypes object
 	@SuppressWarnings("unchecked")
-	public static JSONObject buildDataTypes (JSONArray datasetJSONArray) {
+	public static JSONObject buildDataTypes (JSONArray datasetJSONArray, String dateformat) {
 		JSONObject datatypes = new JSONObject();
+		String tmp = "";
 		for (int i = 0; i < datasetJSONArray.size(); i++) { //iterate inside the dataset file
 			JSONObject datasetObji = (JSONObject) datasetJSONArray.get(i);
 			for (Object v : datasetObji.keySet()) { //for each value of the dataset file
-				try {
-				//take the i-th element and check its type. Then, add it to the datatypes object
-				String subval = datasetObji.get(v).toString();
-				if (isNumeric(subval)) { //check if it is a number
-					datatypes.put(v, "float");
-				} else {
-					if (isTimestamp(subval)) { //check if it is a timestamp
-						datatypes.put(v, "timestamp");
-						isStream = true;
-					} else { //if it is not a number nor timestamp, it is a string
-						datatypes.put(v, "categ");
+				//iterateObject(datasetObji, datatypes);
+				if (datasetObji.get(v) instanceof JSONObject)  {
+					tmp += v;
+					JSONObject datasetObj2 = (JSONObject) datasetObji.get(v);
+					for (Object k : datasetObj2.keySet()) {
+						getDataType(datasetObj2, datatypes, k, tmp, dateformat);
 					}
-				}
-				} catch (Exception e) {
-					
-				}
+				} else {
+					getDataType(datasetObji, datatypes, v, tmp, dateformat);
+			}
+				tmp = "";
 			}
 		}
 		return datatypes;
 	}
+	
+	@SuppressWarnings("unchecked")
+	public static void getDataType(JSONObject datasetObji, JSONObject datatypes, Object v, String tmp, String dateformat) {
+		try {
+			//System.out.println("!!!! " + tmp + " - " + v + " xx " + datasetObji.get(v).toString());
+			//take the i-th element and check its type. Then, add it to the datatypes object
+			String subval = datasetObji.get(v).toString();
+			String val = (tmp=="" ? v.toString() : tmp+"#"+v);
+			if (isNumeric(subval)) { //check if it is a number
+				datatypes.put(val, "float");
+			} else {
+				if (isTimestamp(subval, dateformat)) { //check if it is a timestamp
+					datatypes.put(val, "timestamp");
+					isStream = true;
+				} else { //if it is not a number nor timestamp, it is a string
+					datatypes.put(val, "categ");
+				}
+			}
+			} catch (Exception e) {
+				System.out.println("EXC" + datasetObji + " " + tmp);
+			}
+	}
+	
 	
 	// Method to build the values_range object
 	@SuppressWarnings("unchecked")
@@ -111,13 +131,15 @@ public class DatasetToConfig {
 			case "float":
 				//if it is a float, build the min-max interval object
 				double[] arrayMinMax = getMinMax((String) v, datasetJSONArray);
-				minmax.put("min", Math. round(arrayMinMax[0] * 10) / 10.0);
-				minmax.put("max", Math. round(arrayMinMax[1] * 10) / 10.0);
+				//minmax.put("min", Math.round(arrayMinMax[0] * 100) / 100.0);
+				//minmax.put("max", Math.round(arrayMinMax[1] * 100) / 100.0);
+				minmax.put("min", arrayMinMax[0]);
+				minmax.put("max", arrayMinMax[1]);
 				interval.put("interval", minmax);
 				extern.put(v.toString(), interval);
 				break;
 			case "categ":
-				//if it is a float, build the array interval object
+				//if it is a float, build the array interval objectt
 				JSONArray arrayVal = getArray((String) v, datasetJSONArray);
 				interval.put("interval", arrayVal);
 				extern.put(v.toString(), interval);
@@ -143,13 +165,13 @@ public class DatasetToConfig {
 	}
 	
 	// Method to check if a value is a timestamp
-	public static boolean isTimestamp(String strDate) {
+	public static boolean isTimestamp(String strDate, String dateFormat) {
 	    if (strDate == null) {
 	        return false;
 	    }
 	    try {
 	        @SuppressWarnings("unused")
-			Date d = new SimpleDateFormat("yyyy-MM-dd").parse(strDate);
+			Date d = new SimpleDateFormat(dateFormat).parse(strDate);
 	    } catch (Exception nfe) {
 	        return false;
 	    }
@@ -161,14 +183,26 @@ public class DatasetToConfig {
 	public static JSONArray getArray (String key, JSONArray dataset) {
 		String[] array = new String[dataset.size()]; //define an array
 		for (int i = 0; i < dataset.size(); i++) { //iterate inside the dataset
-			JSONObject datasetObji = (JSONObject) dataset.get(i); //get the i-th object of the array of objects
-			array[i] = datasetObji.get(key).toString(); //get the value of the searched key and add it to the array
+			try {
+				JSONObject datasetObji = (JSONObject) dataset.get(i); //get the i-th object of the array of objects
+				if (key.contains("#")) {
+					String[] keyobj = key.split("#");
+					datasetObji = (JSONObject) datasetObji.get(keyobj[0]);
+					array[i] = datasetObji.get(keyobj[1]).toString(); //get the value of the searched key and add it to the array
+				} else {
+					array[i] = datasetObji.get(key).toString(); //get the value of the searched key and add it to the array
+				}
+			} catch (Exception e) {
+				
+			}
 		}
 		//only take the distinct values of the array
 		String[] unique = Arrays.stream(array).distinct().toArray(String[]::new);
 		JSONArray toReturn = new JSONArray();
 		for (String elem : unique) {
-			toReturn.add(elem);
+			if (elem != null) {
+				toReturn.add(elem);
+			}
 		}
 		return toReturn;
 	}
@@ -179,19 +213,32 @@ public class DatasetToConfig {
 		JSONObject datasetObji = (JSONObject) dataset.get(0);
 		//the first value is firstly set as min and max
 		double [] minmax = new double [2];
-		minmax[0] = Double.parseDouble(datasetObji.get(key).toString());
-		minmax[1] = Double.parseDouble(datasetObji.get(key).toString());
+		Boolean ismin = false;
+		Boolean ismax = false;
+		//minmax[0] = Double.parseDouble(datasetObji.get(key).toString());
+		//minmax[1] = Double.parseDouble(datasetObji.get(key).toString());
 		//iterate inside the dataset (skipping the first object already analized)
-		for (int i = 1; i < dataset.size(); i++) {
+		for (int i = 0; i < dataset.size(); i++) {
 			try {
+			double thisDouble = 0;
 			datasetObji = (JSONObject) dataset.get(i);
-			double thisDouble = Double.parseDouble(datasetObji.get(key).toString());
+			if (key.contains("#")) {
+				String[] keyobj = key.split("#");
+				datasetObji = (JSONObject) datasetObji.get(keyobj[0]);
+				thisDouble = Double.parseDouble(datasetObji.get(keyobj[1]).toString());
+			} else {
+			thisDouble = Double.parseDouble(datasetObji.get(key).toString());
+			}
 			//if the value of the i-th object is < min, assign min to this value
-			if (minmax[0] > thisDouble) {
-				minmax[0] = (thisDouble + minmax[0])/2;
+			if (!ismin || minmax[0] > thisDouble) {
+				//minmax[0] = (thisDouble + minmax[0])/2;
+				minmax[0] = thisDouble;
+				ismin = true;
 			} //if the value of the i-th object is > max, assign to max this value
-			else if (minmax[1] < thisDouble) {
-				minmax[1] = (thisDouble + minmax[1])/2;
+			if (!ismax || minmax[1] < thisDouble) {
+				//minmax[1] = (thisDouble + minmax[1])/2;
+				minmax[1] = thisDouble;
+				ismax = true;
 			}
 			} catch (Exception e) {
 				//case null value

@@ -1,0 +1,138 @@
+{
+	"association_rules": [
+		[["START_LATITUDE"],["END_LATITUDE"]],
+		[["START_LONGITUDE"],["END_LONGITUDE"]]
+	],
+	"values_range": {
+		"DIRECTION": {
+			"interval": [
+				"SB",
+				"WB",
+				"EB",
+				"NB"
+			]
+		},
+		"LENGTH": {
+			"interval": {
+				"min": 0.47,
+				"max": 1.011124862
+			}
+		},
+		"COMMENTS": {
+			"interval": [
+				"Outside City Limits",
+				"IDOT Signals Possible",
+				"Outside City"
+			]
+		},
+		"STREET": {
+			"interval": [
+				"Cicero",
+				"87th",
+				"95th",
+				"Irving Park",
+				"Archer",
+				"Roosevelt",
+				"Peterson",
+				"North",
+				"Western",
+				"Cermak",
+				"Pulaski"
+			]
+		},
+		"TO_STREET": {
+			"interval": [
+				"95th",
+				"Central",
+				"Cicero",
+				"Pulaski",
+				"Western",
+				"California",
+				"Damen",
+				"Kedzie",
+				"Kostner",
+				"91st",
+				"Laramie",
+				"87th",
+				"Central Park"
+			]
+		},
+		"STREET_HEADING": {
+			"interval": [
+				"S",
+				"W"
+			]
+		},
+		"END_LONGITUDE": {
+			"interval": {
+				"min": -87.7669985,
+				"max": -87.6727284
+			}
+		},
+		"FROM_STREET": {
+			"interval": [
+				"87th",
+				"Cicero",
+				"Central",
+				"Pulaski",
+				"Laramie",
+				"Damen",
+				"Kostner",
+				"Central Park",
+				"Western",
+				"California",
+				"Kedzie",
+				"91st",
+				"95th"
+			]
+		},
+		"END_LATITUDE": {
+			"interval": {
+				"min": 41.71993713,
+				"max": 41.99065792
+			}
+		},
+		"START_LONGITUDE": {
+			"interval": {
+				"min": -87.76700093,
+				"max": -87.67272559
+			}
+		},
+		"START_LATITUDE": {
+			"interval": {
+				"min": 41.7196627,
+				"max": 41.99082463
+			}
+		},
+		"CURRENT_SPEED": {
+			"interval": {
+				"min": -1.0,
+				"max": 40.0
+			}
+		},
+		"SEGMENTID": {
+			"interval": {
+				"min": 23.0,
+				"max": 1131.0
+			}
+		}
+	},
+	"source_type": "stream",
+	"volatility": 350000000,
+	"datatypes": {
+		"LAST_UPDATED": "timestamp",
+		"DIRECTION": "categ",
+		"LENGTH": "float",
+		"COMMENTS": "categ",
+		"STREET": "categ",
+		"TO_STREET": "categ",
+		"STREET_HEADING": "categ",
+		"END_LONGITUDE": "float",
+		"FROM_STREET": "categ",
+		"END_LATITUDE": "float",
+		"START_LONGITUDE": "float",
+		"START_LATITUDE": "float",
+		"CURRENT_SPEED": "float",
+		"SEGMENTID": "float"
+	}
+}

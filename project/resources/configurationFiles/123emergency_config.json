@@ -1,0 +1,132 @@
+{
+  "values_range": {
+    "RED": {
+      "interval": [
+        "Norte",
+        "Sur"
+      ]
+    },
+    "LOCALIDAD": {
+      "interval": [
+        "Suba",
+        "Puente Aranda",
+        " Santa Fe",
+        "Engativá",
+        "Kennedy",
+        " Antonio Nariño",
+        " Bosa",
+        "San Cristóbal",
+        " Ciudad Bolívar",
+        " Rafael Uribe Uribe",
+        "Tunjuelito",
+        "Fontibón",
+        " Usaquén",
+        " Chapinero",
+        " Usme",
+        " Barrios Unidos",
+        " Los Mártires",
+        " Teusaquillo",
+        " La Candelaria"
+      ]
+    },
+    "EDAD": {
+      "interval": {
+        "min": 1.0,
+        "max": 96.0
+      }
+    },
+    "TIPO_INCIDENTE": {
+      "interval": [
+        "Lesiones personales",
+        "Accidente de tránsito con heridos/Muertos",
+        "Dolor torácico",
+        "Inconsciente/Paro Cardiorrespiratorio ",
+        "Herido con pólvora",
+        "Intento de suicidio",
+        "Disparos",
+        "Enfermo",
+        "Trastorno mental",
+        "Dificultad Respiratoria",
+        "Heridos ",
+        "Caída ",
+        "Intoxicaciones",
+        "Convulsiones ",
+        "Incidente rescate acuático",
+        "Síntomas gastrointestinales",
+        "Accidente cerebro vascular ",
+        "Quemaduras",
+        "Riña",
+        "Ideas de suicidio ",
+        "Embriaguez",
+        "Incendio estructural",
+        "Patología Gineco - obstétrica",
+        "Incendio forestal",
+        "Muerte Natural",
+        "Violencia Sexual    ",
+        "Verificar Situación",
+        "Abrir domicilio",
+        "Sangrado Vaginal"
+      ]
+    },
+    "PRIORIDAD": {
+      "interval": [
+        "ALTA",
+        "MEDIA",
+        "BAJA"
+      ]
+    },
+    "CLASIFICACION FINAL": {
+      "interval": [
+        "Cancelado",
+        "Traslado",
+        "Falsa Alarma",
+        "Desistimiento",
+        "Trasladado por Otro Recurso",
+        "No Ubica",
+        "Fallecido",
+        "Trasladado por Otro",
+        "No Amerita Traslado"
+      ]
+    },
+    "CODIGO LOCALIDAD": {
+      "interval": {
+        "min": 1.0,
+        "max": 19.0
+      }
+    },
+    "MES": {
+      "interval": [
+        "ENERO"
+      ]
+    },
+    "GENERO": {
+      "interval": [
+        "FEMENINO",
+        "MASCULINO"
+      ]
+    },
+    "UNIDAD": {
+      "interval": [
+        "Años",
+        "Meses",
+        "Horas"
+      ]
+    }
+  },
+  "source_type": "stream",
+  "volatility": 350000000,
+  "datatypes": {
+    "FECHA_INICIO_DESPLAZAMIENTO_MOVIL": "timestamp",
+    "RED": "categ",
+    "LOCALIDAD": "categ",
+    "EDAD": "float",
+    "TIPO_INCIDENTE": "categ",
+    "PRIORIDAD": "categ",
+    "CLASIFICACION FINAL": "categ",
+    "CODIGO LOCALIDAD": "float",
+    "FECHA_INCIDENTE": "timestamp",
+    "MES": "categ",
+    "GENERO": "categ",
+    "UNIDAD": "categ"
+  }
+}

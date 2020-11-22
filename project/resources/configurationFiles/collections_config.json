@@ -1,0 +1,390 @@
+{
+"association_rules": [
+      [["PlaceOfOrigins#Country"], ["PlaceOfOrigins#Continent"], ["PlaceOfOrigins#Complete"]],
+      [["ObjectName"], ["Department"]],
+	  [["Width#UnitLinear"], ["Width#Value"]]
+	],
+  "values_range": {
+    "Width#UnitLinear": {
+      "interval": [
+        " cm"
+      ]
+    },
+    "PlaceOfOrigins#Country": {
+      "interval": [
+        "France",
+        "États-Unis",
+        "Japon",
+        "Philippines",
+        "Canada",
+        "Inde",
+        "Allemagne"
+      ]
+    },
+    "Depth#UnitLinear": {
+      "interval": [
+        " cm"
+      ]
+    },
+    "PlaceOfOrigins#Continent": {
+      "interval": [
+        "Europe",
+        "Amérique du Nord",
+        "Asie"
+      ]
+    },
+    "Classifications#SubCategory": {
+      "interval": [
+        "Pièces et documents",
+        "Chaussure",
+        "Emballage",
+        "Traitement de l\u0027information",
+        "Télécommunication",
+        "Optique",
+        "Sculpture",
+        "Revêtement de sol",
+        "Accessoire vestimentaire",
+        "Accessoire personnel",
+        "Ornement",
+        "Objet de cérémonie et de culte",
+        "Sous-vêtement",
+        "Vêtement de dessus",
+        "Literie",
+        "Travail des fibres et confection",
+        "Traitement des aliments",
+        "Protection civile",
+        "Accessoire de maison",
+        "Recouvrement de porte et fenêtre",
+        "Support publicitaire",
+        "Élevage et soin des animaux",
+        "Médecine et psychologie",
+        "Autre forme d\u0027art"
+      ]
+    },
+    "CreditLineObject": {
+      "interval": [
+        "Musée de la civilisation",
+        "Musée de la civilisation, restauration effectuée par le Centre de conservation du Québec",
+        "Musée de la civilisation, don du Journal de Québec",
+        "Musée de la civilisation, don de Louise Prévost",
+        "Musée de la civilisation, collection Paradis Fournier",
+        "Musée de la civilisation, don d\u0027Yves Beauregard",
+        "Musée de la civilisation, don de Thérèse Lefebvre",
+        "Musée de la civilisation, don de Saul Ettinger",
+        "Musée de la civilisation, don de Yolaine Turcotte"
+      ]
+    },
+    "Period": {
+      "interval": [
+        "20e siècle",
+        "19e siècle",
+        "4e quart du 20e siècle",
+        "4e quart du 19e siècle, 1er quart du 20e siècle",
+        "2e moitié du 20e siècle",
+        "4e quart du 20e siècle; 1er quart du 21e siècle",
+        "4e quart du 20e siècle, 1er quart du 21e siècle",
+        "20e siècle, 1er quart du 21e siècle",
+        "1re moitié du 20e siècle, 2e moitié du 19e siècle",
+        "Milieu du 20e siècle",
+        "4e quart du 19e siècle, 3e quart du 20e siècle, 1re moitié du 20e siècle",
+        "3e quart du 20e siècle"
+      ]
+    },
+    "Material": {
+      "interval": [
+        "Peinture; Adhésif, colle; Métal, fer; Bois, chêne ?",
+        "Métal; Teinture; Bois, chêne ?",
+        "Fer; Bois; Métal; Teinture; Frêne ?",
+        "Bois; Métal; Peau; Cuir",
+        "Bois; Écorce de bouleau; Racine, épinette",
+        "Plastique; Métal",
+        "Plastique; Métal; Papier; Encre; Adhésif",
+        "Caoutchouc; Plastique; Métal; Fibre",
+        "Plastique; Métal; Nylon; Vinyle",
+        "Peinture; Verre; Encre; Fibre; Peau, cuir; Métal, laiton; Coquille, nacre",
+        "Bois; Peinture; Métal; Fibre synthétique",
+        "Peinture; Métal; Colle ?; Bois, cèdre ?",
+        "Bois; Caoutchouc; Peinture; Métal; Encre; Colle; Plâtre ?",
+        "Bois; Caoutchouc; Peinture; Plastique; Métal; Vernis; Teinture; Colle; Fibre synthétique",
+        "Bois; Peinture; Métal; Pierre; Peau; Sable; Fibre; Colle; Cuir; Plâtre ?",
+        "Bois; Peinture; Métal; Encre; Fibre ?; Colle; Fibre synthétique; Peau, cuir; Herbe, foin",
+        "Fibre; Fibre, laine; Fibre, coton; Étoffe, feutre; Fibre, jute",
+        "Fibre",
+        "Fibre; Coton",
+        "Plastique",
+        "Étoffe, satin",
+        "Plastique; Fibre, coton; Étoffe, satin",
+        "Verre; Plastique",
+        "Soie; Fibre; Coton",
+        "Laine; Soie; Fibre",
+        "Laine; Fibre",
+        "Bois",
+        "Fer; Bois; Métal; Laiton",
+        "Métal",
+        "Métal; Peinture ?",
+        "Métal; Laiton",
+        "Plastique; Métal; Acier",
+        "Peinture; Métal",
+        "Fer; Métal; Laiton ?",
+        "Verre; Métal; Laiton; Perle",
+        "Fibre synthétique",
+        "Métal; Carton",
+        "Bois; Carton",
+        "Bois; Verre; Métal",
+        "Laine; Plastique; Fibre",
+        "Métal, chrome",
+        "Bois; Écorce, bouleau",
+        "Verre; Peau, orignal; Dent, orignal"
+      ]
+    },
+    "Height#UnitLinear": {
+      "interval": [
+        " cm"
+      ]
+    },
+    "Depth#Value": {
+      "interval": {
+        "min": 0.8,
+        "max": 62.0
+      }
+    },
+    "PlaceOfOrigins#State": {
+      "interval": [
+        "Californie",
+        "Québec",
+        "New York",
+        "Connecticut",
+        "Ontario"
+      ]
+    },
+    "PlaceOfOrigins#Complete": {
+      "interval": [
+        "Saint-Malo Europe France",
+        "Europe France",
+        "Cupertino Amérique du Nord États-Unis Californie",
+        "Asie Japon",
+        "San Diego Amérique du Nord États-Unis Californie",
+        "Asie Philippines",
+        "Paris Europe France",
+        "Saint-Charles-de-Bourget Amérique du Nord Canada Saguenay-Lac-Saint-Jean Québec",
+        "Saint-Isidore Amérique du Nord Canada Chaudière-Appalaches Québec",
+        "Saint-Ulric Amérique du Nord Canada Bas-Saint-Laurent Québec",
+        "Amérique du Nord Canada Capitale-Nationale Québec",
+        "Amérique du Nord Canada Québec",
+        "Amérique du Nord États-Unis",
+        "Québec, Charlesbourg Amérique du Nord Canada Capitale-Nationale Québec",
+        "Amérique du Nord Canada",
+        "New York Amérique du Nord États-Unis New York",
+        "New Britain Amérique du Nord États-Unis Connecticut",
+        "Asie Inde",
+        "Europe Allemagne",
+        "Stamford Amérique du Nord États-Unis Connecticut",
+        "London Amérique du Nord Canada Ontario",
+        "Québec Amérique du Nord Canada Capitale-Nationale Québec",
+        "Toronto Amérique du Nord Canada Ontario",
+        "Pembroke Amérique du Nord Canada Ontario",
+        "Montréal Amérique du Nord Canada Montréal Québec",
+        "Orillia Amérique du Nord Canada Ontario",
+        "Fort-Sainte-Foy Amérique du Nord Canada Québec",
+        "Fort-George Amérique du Nord Canada Québec",
+        "Chisasibi Amérique du Nord Canada Québec"
+      ]
+    },
+    "ObjectName": {
+      "interval": [
+        "Coffret miniature",
+        "Banc-coffre miniature",
+        "Banc miniature",
+        "Sabot",
+        "Contenant",
+        "Ordinateur portatif",
+        "Lecteur de disquette externe",
+        "Disquette",
+        "Coupleur acoustique",
+        "Sacoche d\u0027ordinateur portatif",
+        "Jumelles de théâtre",
+        "Sculpture",
+        "Tapis",
+        "Gant",
+        "Mouchoir",
+        "Ornement pour cheveux",
+        "Drap de tête de baptême",
+        "Robe de baptême",
+        "Peigne",
+        "Jupon de baptême",
+        "Bonnet de baptême",
+        "Boléro de baptême",
+        "Chausson de baptême",
+        "Couverture",
+        "Piqué",
+        "Métier à tisser",
+        "Trancheuse",
+        "Cadenas",
+        "Broche",
+        "Barrette",
+        "Parure de toile",
+        "Tapis de table",
+        "Carton d\u0027allumettes",
+        "Boîte d\u0027allumettes",
+        "Râpe",
+        "Urne électorale",
+        "Manteau",
+        "Spéculum vaginal",
+        "Canot miniature",
+        "Collier"
+      ]
+    },
+    "Department": {
+      "interval": [
+        "Objets"
+      ]
+    },
+    "Width#Value": {
+      "interval": {
+        "min": 0.5,
+        "max": 130.0
+      }
+    },
+    "PlaceOfOrigins#City": {
+      "interval": [
+        "Saint-Malo",
+        "Cupertino",
+        "San Diego",
+        "Paris",
+        "Saint-Charles-de-Bourget",
+        "Saint-Isidore",
+        "Saint-Ulric",
+        "Québec, Charlesbourg",
+        "New York",
+        "New Britain",
+        "Stamford",
+        "London",
+        "Québec",
+        "Toronto",
+        "Pembroke",
+        "Montréal",
+        "Orillia",
+        "Fort-Sainte-Foy",
+        "Fort-George",
+        "Chisasibi"
+      ]
+    },
+    "Classifications#Category": {
+      "interval": [
+        "Moyens d\u0027expression",
+        "Vêtements et accessoires",
+        "Transport et manutention",
+        "O\u0026É-Communication",
+        "Armement, sciences et technologies",
+        "Ameublement et décoration",
+        "O\u0026É-Traitement de matières premières"
+      ]
+    },
+    "_id": {
+      "interval": {
+        "min": 0.0,
+        "max": 101149.0
+      }
+    },
+    "Technique": {
+      "interval": [
+        "Artisanal; Sculpté; Découpé; Assemblé; Tourné; Teint; Cloué; Collé",
+        "Teint; Tourné; Assemblé; Découpé; Sculpté; Artisanal",
+        "Découpé; Assemblé; Artisanal; Teint; Tourné; Cloué; Sculpté",
+        "Artisanal",
+        "Cousu; Découpé",
+        "Industriel",
+        "Industriel; Découpé; Moulé; Plié; Perforé; Imprimé; Collé",
+        "Industriel; Découpé; Rembourré; Cousu; Assemblé",
+        "Industriel; Découpé; Assemblé; Collé ?; Vissé",
+        "Artisanal; Découpé; Sculpté; Assemblé; Collé; Cloué; Peint",
+        "Artisanal; Découpé; Sculpté; Assemblé; Cloué; Collé ?; Peint",
+        "Artisanal; Découpé; Sculpté; Verni; Teint; Assemblé; Vissé; Cloué; Collé; Peint",
+        "Artisanal; Découpé; Sculpté; Assemblé; Collé; Peint",
+        "Artisanal; Découpé; Sculpté; Assemblé; Collé; Noué; Peint",
+        "Artisanal; Découpé; Assemblé; Cousu; Rembourré",
+        "Artisanal; Tissé; Découpé; Cousu",
+        "Industriel; Tissé; Découpé; Imprimé; Cousu",
+        "Moulé; Industriel",
+        "Industriel; Tissé; Découpé; Imprimé; Cousu; Crocheté",
+        "Industriel; Tissé; Découpé; Imprimé; Cousu; Brodé",
+        "Artisanal; Découpé; Tissé; Cousu",
+        "Artisanal; Découpé; Tissé; Cousu; Brodé",
+        "Industriel; Moulé",
+        "Artisanal; Découpé; Tissé; Cousu; Crocheté",
+        "Artisanal; Tricoté; Découpé; Tissé; Cousu",
+        "Artisanal; Crocheté; Découpé; Tissé; Cousu",
+        "Artisanal; Tissé",
+        "Artisanal; Scié; Sculpté; Perforé; Sablé",
+        "Artisanal; Scié; Sablé; Découpé; Plié; Tourné; Aiguisé; Vissé; Assemblé",
+        "Industriel; Moulé; Assemblé; Estampé",
+        "Industriel; Moulé; Assemblé; Découpé; Estampé",
+        "Industriel; Découpé; Moulé ?; Assemblé; Riveté; Estampé",
+        "Industriel; Moulé; Découpé; Assemblé; Estampé",
+        "Industriel; Moulé ?; Découpé; Assemblé",
+        "Industriel; Moulé ?; Découpé; Assemblé; Riveté; Estampé",
+        "Industriel; Moulé; Assemblé; Découpé; Estampé; Peint ?",
+        "Moulé; Industriel; Soudé; Gravé",
+        "Moulé; Industriel; Assemblé",
+        "Industriel; Moulé; Assemblé",
+        "Industriel; Moulé; Découpé; Assemblé; Peint",
+        "Industriel; Moulé; Assemblé; Estampé; Découpé",
+        "Industriel; Moulé; Découpé; Percé; Assemblé; Estampé",
+        "Industriel; Moulé; Découpé; Percé; Plié; Peint; Assemblé; Riveté; Estampé",
+        "Industriel; Moulé; Découpé; Percé; Assemblé; Riveté; Estampé",
+        "Industriel; Moulé; Découpé; Percé; Peint; Assemblé; Riveté; Estampé",
+        "Industriel; Moulé; Découpé; Percé; Peint; Assemblé",
+        "Industriel; Forgé ?; Découpé; Percé; Assemblé; Riveté; Soudé ?",
+        "Industriel; Moulé; Percé; Assemblé; Estampé",
+        "Industriel; Forgé ?; Découpé; Plié; Assemblé; Soudé",
+        "Moulé; Industriel; Soudé",
+        "Industriel; Moulé ?; Forgé ?; Découpé; Plié; Assemblé; Riveté",
+        "Industriel; Moulé; Percé; Assemblé; Riveté; Peint; Estampé",
+        "Industriel; Tissé",
+        "Industriel; Découpé; Imprimé; Broché",
+        "Industriel; Découpé; Imprimé; Plié; Collé",
+        "Artisanal; Scié; Tourné; Moulé; Teint; Assemblé",
+        "Sculpté; Assemblé; Plié",
+        "Enfilé; Enfilé; Troué"
+      ]
+    },
+    "Height#Value": {
+      "interval": {
+        "min": 0.9,
+        "max": 177.0
+      }
+    },
+    "Culture": {
+      "interval": [
+        "Amérindien; Huron-Wendat",
+        "Canadien; Québécois",
+        "Cri; Amérindien; Eeyou"
+      ]
+    }
+  },
+  "source_type": "batch",
+  "volatility": 350000000,
+  "datatypes": {
+    "Width#UnitLinear": "categ",
+    "PlaceOfOrigins#Country": "categ",
+    "Depth#UnitLinear": "categ",
+    "PlaceOfOrigins#Continent": "categ",
+    "Classifications#SubCategory": "categ",
+    "CreditLineObject": "categ",
+    "Period": "categ",
+    "Material": "categ",
+    "Height#UnitLinear": "categ",
+    "Depth#Value": "float",
+    "PlaceOfOrigins#State": "categ",
+    "PlaceOfOrigins#Complete": "categ",
+    "ObjectName": "categ",
+    "Department": "categ",
+    "Width#Value": "float",
+    "PlaceOfOrigins#City": "categ",
+    "Classifications#Category": "categ",
+    "_id": "float",
+    "Technique": "categ",
+    "Height#Value": "float",
+    "Culture": "categ"
+  }
+}

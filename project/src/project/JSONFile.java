@@ -218,7 +218,7 @@ public class JSONFile {
 		return accuracy;
 	}
 	
-	public static double timeliness (JSONObject configJSONObject, JSONArray datasetJSONArray) {
+	public static double timeliness (JSONObject configJSONObject, JSONArray datasetJSONArray, String dateformat) {
 		// From the configuration file, get the datatypes object
 		double timelness = 0;
 		JSONObject timestampVal = (JSONObject) configJSONObject.get("datatypes");
@@ -234,7 +234,7 @@ public class JSONFile {
 					for (int i = 0; i < datasetJSONArray.size(); i++) {
 						JSONObject currentElem = (JSONObject) datasetJSONArray.get(i);
 						//get the date value of the i-th element of the dataset
-						Date date = new SimpleDateFormat("yyyy-MM-dd").parse(currentElem.get(v).toString());
+						Date date = new SimpleDateFormat(dateformat).parse(currentElem.get(v).toString());
 						long millis = date.getTime(); // milliseconds of the timestamp i-th value
 						currencies.add(nowMillis-millis); // add to the array of currencies nowMillis-millis
 						}
@@ -265,8 +265,10 @@ public class JSONFile {
 		// Get values_range from the configuration object
 		JSONObject valuesRangeObj = (JSONObject) configJSONObject.get("values_range");
 		for (Object v : valuesRangeObj.keySet()) { // iterate inside the values_range
+			//System.out.println("!!" + v);
 			//System.out.println("key: " + v); // key
 			JSONObject subval = (JSONObject) valuesRangeObj.get(v);
+			//System.out.println("!!" + subval);
 			//System.out.print("interval: " + subval.get("interval")); //get the interval corresponding to that key
 			
 			// Building up the arrays of booleans for accuracy categ, float, not null and distance
@@ -279,7 +281,16 @@ public class JSONFile {
 				for (int i = 0; i < datasetJSONArray.size(); i++) { 
 					JSONObject datasetObji = (JSONObject) datasetJSONArray.get(i);
 					try {
-						interval(minvalue, maxvalue, Double.parseDouble(datasetObji.get(v).toString()));
+						if (v.toString().contains("#")) {
+							String key = v.toString();
+							String[] keyobj = key.split("#");
+							JSONObject datasetObji2 = (JSONObject) datasetObji.get(keyobj[0]);
+							double currentvalue = Double.parseDouble(datasetObji2.get(keyobj[1]).toString());
+							//System.out.println(" " + currentvalue);
+							interval(minvalue, maxvalue, currentvalue);
+						} else {
+							interval(minvalue, maxvalue, Double.parseDouble(datasetObji.get(v).toString()));
+						}
 						arrayBoolNotNull.add(true);
 					} catch (NullPointerException e) {
 						arrayBoolNotNull.add(false);
@@ -294,7 +305,14 @@ public class JSONFile {
 				for (int i = 0; i < datasetJSONArray.size(); i++) {
 					JSONObject datasetObji = (JSONObject) datasetJSONArray.get(i);
 					try {
-						interval(valuesRange, (String) datasetObji.get(v));
+						if (v.toString().contains("#")) {
+							String key = v.toString();
+							String[] keyobj = key.split("#");
+							JSONObject datasetObji2 = (JSONObject) datasetObji.get(keyobj[0]);
+							interval(valuesRange, (String) datasetObji2.get(keyobj[1]));
+						} else {
+							interval(valuesRange, (String) datasetObji.get(v));
+						}
 						arrayBoolNotNull.add(true);
 					} catch (NullPointerException e) {
 						arrayBoolNotNull.add(false);
@@ -318,7 +336,7 @@ public class JSONFile {
 	}
 	
 	/* --------------------    Calculate stream metrics    -------------------- */
-	public static void calculateStreamMetrics(JSONObject configJSONObject, JSONArray datasetJSONArray) {
+	public static void calculateStreamMetrics(JSONObject configJSONObject, JSONArray datasetJSONArray, String dateformat) {
 		
 		int window_size = 10; // set windows size
 		int dataset_size = datasetJSONArray.size(); // get dataset size
@@ -396,15 +414,15 @@ public class JSONFile {
 		accuracy_evaluation_boolean_categ = accuracy_categ_float_stream(number_of_windows, accuracy_categ_subsets, "STREAM ACCURACY_CATEG");
 		completeness_missing = accuracy_categ_float_stream(number_of_windows, completeness_subsets, "STREAM COMPLETENESS");
 		
-		timeliness_evaluation = timeliness(configJSONObject, datasetJSONArray);
+		timeliness_evaluation = timeliness(configJSONObject, datasetJSONArray, dateformat);
 	}
 	
 	/*----------------         MAIN             ----------------*/
 	public static void main (String[] args) {
 		
 		// Read the dataset and configuration files
-		Object returnedDataset = readFile("resources/blood_analysis.json"); // dataset object
-		Object returnedConfig = readFile("resources/blood_analysis_config.json"); //configuration file object
+		Object returnedDataset = readFile("resources/chicagoTrafficTracker_com3.json"); // dataset object
+		Object returnedConfig = readFile("resources/chicagoTrafficTracker_config.json"); //configuration file object
 		String result = "Unknown data type";
 		
 		//Check whether the two objects are not null
@@ -424,7 +442,7 @@ public class JSONFile {
 				result = buildDQEvaluator("batch");
 			} else {
 				if (sourceType.equals("stream")) {
-					calculateStreamMetrics(configJSONObject, datasetJSONArray);
+					calculateStreamMetrics(configJSONObject, datasetJSONArray, "yyyy-MM-dd");
 					result = buildDQEvaluator("stream");
 				}
 			}
@@ -458,13 +476,22 @@ public class JSONFile {
 					Double maxvalue = Double.parseDouble(subv.get("max").toString()); //maximum value
 					for (int i = 0; i < dataset.size(); i++) {
 						try {
-						JSONObject element = (JSONObject) dataset.get(i);
-						if (Double.parseDouble(element.get(elem).toString()) >= minvalue && Double.parseDouble(element.get(elem).toString()) <= maxvalue) {
-							array[i] = (array[i] == true);
-						} else {
-							array[i] = (array[i] == false);
-						}
-						} catch(Exception e) {
+							double currentvalue;
+							JSONObject element = (JSONObject) dataset.get(i);
+							if (elem.toString().contains("#")) {
+								String key = elem.toString();
+								String[] keyobj = key.split("#");
+								JSONObject datasetObji2 = (JSONObject) element.get(keyobj[0]);
+								currentvalue = Double.parseDouble(datasetObji2.get(keyobj[1]).toString());
+							} else {
+								currentvalue = Double.parseDouble(element.get(elem).toString());
+							}
+							if (currentvalue >= minvalue && currentvalue <= maxvalue) {
+								array[i] = true;
+								} else {
+									array[i] = false;
+									}
+							} catch(Exception e) {
 							array[i] = false;
 						}
 					}
@@ -475,8 +502,16 @@ public class JSONFile {
 					String[] vRange = arrayEdits.split(",");
 					for (int i = 0; i < dataset.size(); i++) {
 						try {
+							String vali = "";
 							JSONObject element = (JSONObject) dataset.get(i);
-							String vali = element.get(elem).toString();
+							if (elem.toString().contains("#")) {
+								String key = elem.toString();
+								String[] keyobj = key.split("#");
+								JSONObject datasetObji2 = (JSONObject) element.get(keyobj[0]);
+								vali = datasetObji2.get(keyobj[1]).toString();
+							} else {
+								vali = element.get(elem).toString();
+							}
 							Boolean found = false;
 							for (String n : vRange) {
 					            if (n.contentEquals(vali)) {

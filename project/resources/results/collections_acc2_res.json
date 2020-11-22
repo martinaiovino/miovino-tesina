@@ -1,0 +1,19 @@
+{
+	"batch": {
+		"global": {
+			"consistency": 0.57,
+			"completeness_missing": 0.8252380952380952
+		},
+		"attribute": {
+			"categ": {
+				"accuracy": 0.7392257121986852
+			},
+			"float": {
+				"accuracy": 0.5439560439560439
+			},
+			"timestamp": {
+				"timeliness": 1.0
+			}
+		}
+	}
+}

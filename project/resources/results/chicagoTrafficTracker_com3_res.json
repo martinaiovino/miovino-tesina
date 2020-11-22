@@ -1,0 +1,19 @@
+{
+	"stream": {
+		"global": {
+			"consistency": 0.9333333333333333,
+			"completeness_missing": 0.7189349112426037
+		},
+		"attribute": {
+			"categ": {
+				"accuracy": 1.0
+			},
+			"float": {
+				"accuracy": 1.0
+			},
+			"timestamp": {
+				"timeliness": 1.0
+			}
+		}
+	}
+}
