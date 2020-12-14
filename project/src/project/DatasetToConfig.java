@@ -1,10 +1,11 @@
 package project;
 
 import java.io.File;
+
+import java.text.SimpleDateFormat;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Scanner;
@@ -21,62 +22,14 @@ import com.google.gson.JsonParser;
 public class DatasetToConfig {
 	
 	static Boolean isStream = false; //boolean for the source type
-	
-	@SuppressWarnings("unchecked")
-	public static void main (String[] args) {
-		String fileName = "collections.json"; // File name
-		JSONArray datasetFile = new JSONArray();
-		
-		try
-        {
-			//read the dataset file
-        	File f = new File("resources/" + fileName); // look for the file
-        	System.out.println(f.getAbsolutePath());
-        	JSONParser jsonParser = new JSONParser(); // parser
-        	FileReader reader = new FileReader(f.getAbsolutePath());
-        	datasetFile = (JSONArray) jsonParser.parse(reader);
-        	
-        	//start building the content of the derived configuration file
-        	JSONObject configFile = new JSONObject(); //config file
-        	
-        	String dateFormat = "yyyy-MM-dd";
-        	JSONObject dt = buildDataTypes(datasetFile, dateFormat); //datatypes
-        	configFile.put("datatypes", dt);
-        	
-        	JSONObject vr = buildValuesRange(dt, datasetFile); //values range
-        	configFile.put("values_range", vr);
-        	
-        	if (isStream) { //source type
-        		configFile.put("source_type", "stream");
-        	} else {
-        		configFile.put("source_type", "batch");
-        	}
-        	
-          	configFile.put("volatility", 350000000); //volatility
-          	
-          	//TODO association rules
-          	
-          	//print the configuration file as a string
-          	Gson gson = new GsonBuilder().setPrettyPrinting().create();
-          	JsonParser jp = new JsonParser();
-          	JsonElement je = jp.parse(configFile.toString());
-          	String prettyJsonString = gson.toJson(je);
-        	System.out.println(prettyJsonString);
-        	saveFile(prettyJsonString); //ask to save file
-        } catch (Exception e) { //FileNotFoundException
-            e.printStackTrace();
-        }
-	}
-	
+
 	// Method to build the datatypes object
-	@SuppressWarnings("unchecked")
 	public static JSONObject buildDataTypes (JSONArray datasetJSONArray, String dateformat) {
 		JSONObject datatypes = new JSONObject();
 		String tmp = "";
 		for (int i = 0; i < datasetJSONArray.size(); i++) { //iterate inside the dataset file
 			JSONObject datasetObji = (JSONObject) datasetJSONArray.get(i);
 			for (Object v : datasetObji.keySet()) { //for each value of the dataset file
-				//iterateObject(datasetObji, datatypes);
 				if (datasetObji.get(v) instanceof JSONObject)  {
 					tmp += v;
 					JSONObject datasetObj2 = (JSONObject) datasetObji.get(v);
@@ -95,7 +48,6 @@ public class DatasetToConfig {
 	@SuppressWarnings("unchecked")
 	public static void getDataType(JSONObject datasetObji, JSONObject datatypes, Object v, String tmp, String dateformat) {
 		try {
-			//System.out.println("!!!! " + tmp + " - " + v + " xx " + datasetObji.get(v).toString());
 			//take the i-th element and check its type. Then, add it to the datatypes object
 			String subval = datasetObji.get(v).toString();
 			String val = (tmp=="" ? v.toString() : tmp+"#"+v);
@@ -131,15 +83,13 @@ public class DatasetToConfig {
 			case "float":
 				//if it is a float, build the min-max interval object
 				double[] arrayMinMax = getMinMax((String) v, datasetJSONArray);
-				//minmax.put("min", Math.round(arrayMinMax[0] * 100) / 100.0);
-				//minmax.put("max", Math.round(arrayMinMax[1] * 100) / 100.0);
 				minmax.put("min", arrayMinMax[0]);
 				minmax.put("max", arrayMinMax[1]);
 				interval.put("interval", minmax);
 				extern.put(v.toString(), interval);
 				break;
 			case "categ":
-				//if it is a float, build the array interval objectt
+				//if it is a float, build the array interval object
 				JSONArray arrayVal = getArray((String) v, datasetJSONArray);
 				interval.put("interval", arrayVal);
 				extern.put(v.toString(), interval);
@@ -211,12 +161,9 @@ public class DatasetToConfig {
 	public static double[] getMinMax (String key, JSONArray dataset) {
 		//get the first value (given the key) of the first object of dataset (array of objects)
 		JSONObject datasetObji = (JSONObject) dataset.get(0);
-		//the first value is firstly set as min and max
 		double [] minmax = new double [2];
 		Boolean ismin = false;
 		Boolean ismax = false;
-		//minmax[0] = Double.parseDouble(datasetObji.get(key).toString());
-		//minmax[1] = Double.parseDouble(datasetObji.get(key).toString());
 		//iterate inside the dataset (skipping the first object already analized)
 		for (int i = 0; i < dataset.size(); i++) {
 			try {
@@ -231,12 +178,10 @@ public class DatasetToConfig {
 			}
 			//if the value of the i-th object is < min, assign min to this value
 			if (!ismin || minmax[0] > thisDouble) {
-				//minmax[0] = (thisDouble + minmax[0])/2;
 				minmax[0] = thisDouble;
 				ismin = true;
 			} //if the value of the i-th object is > max, assign to max this value
 			if (!ismax || minmax[1] < thisDouble) {
-				//minmax[1] = (thisDouble + minmax[1])/2;
 				minmax[1] = thisDouble;
 				ismax = true;
 			}
@@ -247,6 +192,8 @@ public class DatasetToConfig {
 		return minmax;
 	}
 	
+	/* The following code is NOT executed in case the GUI is used */
+	// Method to save the generated configuration file
 	public static void saveFile (String jsonContent) {
 		@SuppressWarnings("resource")
 		Scanner keyboard = new Scanner(System.in);
@@ -256,7 +203,6 @@ public class DatasetToConfig {
     	try {
     		System.out.println("Type the file name: ");
         	String filen = keyboard.next();
-            // Constructs a FileWriter given a file name, using the platform's default charset
             FileWriter file = new FileWriter("resources/" + filen + ".json");
             file.write(jsonContent);
             file.flush();
@@ -268,5 +214,48 @@ public class DatasetToConfig {
     	} else {
     		System.out.println("Bye");
     	}
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static void main (String[] args) {
+		String fileName = "collections.json"; // File name
+		JSONArray datasetFile = new JSONArray();
+		
+		try
+        {
+			//read the dataset file
+        	File f = new File("resources/" + fileName); // look for the file
+        	JSONParser jsonParser = new JSONParser(); // parser
+        	FileReader reader = new FileReader(f.getAbsolutePath());
+        	datasetFile = (JSONArray) jsonParser.parse(reader);
+        	
+        	//start building the content of the derived configuration file
+        	JSONObject configFile = new JSONObject(); //config file
+        	
+        	String dateFormat = "yyyy-MM-dd"; // date format here 
+        	JSONObject dt = buildDataTypes(datasetFile, dateFormat); //datatypes
+        	configFile.put("datatypes", dt);
+        	
+        	JSONObject vr = buildValuesRange(dt, datasetFile); //values range
+        	configFile.put("values_range", vr);
+        	
+        	if (isStream) { //source type
+        		configFile.put("source_type", "stream");
+        	} else {
+        		configFile.put("source_type", "batch");
+        	}
+        	
+          	configFile.put("volatility", 350000000); //volatility
+          	          	
+          	//print the configuration file as a string
+          	Gson gson = new GsonBuilder().setPrettyPrinting().create();
+          	JsonParser jp = new JsonParser();
+          	JsonElement je = jp.parse(configFile.toString());
+          	String prettyJsonString = gson.toJson(je);
+        	System.out.println(prettyJsonString);
+        	saveFile(prettyJsonString); //ask to save file
+        } catch (Exception e) { //FileNotFoundException
+            e.printStackTrace();
+        }
 	}
 }

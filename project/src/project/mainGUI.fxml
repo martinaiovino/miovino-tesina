@@ -7,9 +7,9 @@
 <?import java.lang.*?>
 <?import javafx.scene.control.*?>
 
-<ScrollPane prefHeight="599.0" prefWidth="632.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="project.MainGUI">
+<ScrollPane prefHeight="642.0" prefWidth="1196.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="project.MainGUI">
    <content>
-      <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="602.0" prefWidth="632.0" style="-fx-background-color: white;">
+      <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="1190.0" style="-fx-background-color: white;">
          <children>
             <Pane layoutX="13.0" layoutY="14.0" prefHeight="92.0" prefWidth="587.0" style="-fx-border-style: solid;">
                <children>
@@ -28,26 +28,12 @@
                         <Font name="Tahoma" size="12.0" />
                      </font>
                   </RadioButton>
+                  <ComboBox fx:id="existing_datasets" layoutX="179.0" layoutY="31.0" prefHeight="0.0" prefWidth="394.0" style="-fx-background-color: white; -fx-border-style: solid;" visible="false" />
                </children>
             </Pane>
-            <Pane fx:id="upload_pane" layoutX="13.0" layoutY="116.0" prefHeight="152.0" prefWidth="588.0" style="-fx-border-style: solid;" visible="false">
+            <Pane fx:id="upload_pane" layoutX="13.0" layoutY="116.0" prefHeight="355.0" prefWidth="588.0" style="-fx-border-style: solid;" visible="false">
                <children>
                   <Button fx:id="upload_dataset" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#uploadDatasetBtn" prefHeight="33.0" prefWidth="169.0" style="-fx-background-color: #f8f8f8; -fx-border-color: black;" text="Upload dataset...">
-                     <font>
-                        <Font size="12.0" />
-                     </font>
-                  </Button>
-                  <Button fx:id="upload_config" layoutX="13.0" layoutY="87.0" mnemonicParsing="false" onAction="#uploadConfigBtn" prefHeight="33.0" prefWidth="169.0" style="-fx-background-color: #f8f8f8; -fx-border-color: black;" text="Upload config file...">
-                     <font>
-                        <Font size="12.0" />
-                     </font>
-                  </Button>
-                  <Text layoutX="282.0" layoutY="118.0" strokeType="OUTSIDE" strokeWidth="0.0" text="or" wrappingWidth="11.8046875">
-                     <font>
-                        <Font size="12.0" />
-                     </font>
-                  </Text>
-                  <Button fx:id="generate_config" layoutX="405.0" layoutY="89.0" mnemonicParsing="false" onAction="#clickGenerateConfig" prefHeight="33.0" prefWidth="169.0" style="-fx-background-color: #f8f8f8; -fx-border-color: black;" text="Generate config file">
                      <font>
                         <Font size="12.0" />
                      </font>
@@ -57,25 +43,52 @@
                         <Font name="Calibri" size="12.0" />
                      </font>
                   </Hyperlink>
-                  <Hyperlink fx:id="selected_config" layoutX="12.0" layoutY="125.0" onAction="#openSelectedConfig" visible="false">
+                  <TextArea fx:id="uploaded_dataset" editable="false" layoutX="14.0" layoutY="87.0" prefHeight="196.0" prefWidth="562.0" />
+                  <Separator layoutX="14.0" layoutY="293.0" prefHeight="5.0" prefWidth="562.0" />
+                  <Text disable="true" layoutX="14.0" layoutY="320.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Please, select or type the date format used in the dataset:" wrappingWidth="210.8046875">
+                     <font>
+                        <Font size="12.0" />
+                     </font>
+                  </Text>
+                  <ComboBox fx:id="dateformat" disable="true" editable="true" layoutX="256.0" layoutY="305.0" prefHeight="39.0" prefWidth="318.0" />
+               </children>
+            </Pane>
+            <Separator layoutX="613.0" layoutY="7.0" orientation="VERTICAL" prefHeight="626.0" prefWidth="0.0" />
+            <TextArea fx:id="text_area" disable="true" layoutX="630.0" layoutY="14.0" prefHeight="553.0" prefWidth="546.0" style="-fx-border-style: solid;" text="No data to display." />
+            <Button fx:id="evaluate_btn" layoutX="13.0" layoutY="581.0" mnemonicParsing="false" onAction="#evaluateDataset" prefHeight="35.0" prefWidth="589.0" style="-fx-opacity: 0.9; -fx-border-color: black; -fx-background-color: #00008B;" text="Evaluate the dataset" textFill="WHITE" visible="false">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
+            <Button fx:id="save_btn" layoutX="630.0" layoutY="581.0" mnemonicParsing="false" onAction="#saveBtn" prefHeight="35.0" prefWidth="546.0" style="-fx-background-color: #2E8B57; -fx-border-color: black; -fx-opacity: 0.9;" text="Save" textFill="WHITE" visible="false">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
+            <Pane fx:id="upload_pane1" layoutX="13.0" layoutY="480.0" prefHeight="86.0" prefWidth="588.0" style="-fx-border-style: solid;" visible="false">
+               <children>
+                  <Button fx:id="upload_config" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#uploadConfigBtn" prefHeight="33.0" prefWidth="169.0" style="-fx-background-color: #f8f8f8; -fx-border-color: black;" text="Upload config file...">
+                     <font>
+                        <Font size="12.0" />
+                     </font>
+                  </Button>
+                  <Text layoutX="269.0" layoutY="35.0" strokeType="OUTSIDE" strokeWidth="0.0" text="or" wrappingWidth="11.8046875">
+                     <font>
+                        <Font size="12.0" />
+                     </font>
+                  </Text>
+                  <Button fx:id="generate_config" disable="true" layoutX="405.0" layoutY="14.0" mnemonicParsing="false" onAction="#clickGenerateConfig" prefHeight="33.0" prefWidth="169.0" style="-fx-background-color: #f8f8f8; -fx-border-color: black;" text="Generate config file">
+                     <font>
+                        <Font size="12.0" />
+                     </font>
+                  </Button>
+                  <Hyperlink fx:id="selected_config" layoutX="15.0" layoutY="52.0" onAction="#openSelectedConfig" visible="false">
                      <font>
                         <Font name="Calibri" size="12.0" />
                      </font>
                   </Hyperlink>
-                  <Separator layoutX="13.0" layoutY="75.0" prefHeight="5.0" prefWidth="562.0" />
                </children>
             </Pane>
-            <TextArea fx:id="text_area" layoutX="13.0" layoutY="278.0" prefHeight="246.0" prefWidth="589.0" style="-fx-border-color: #00008B;" visible="false" />
-            <Button fx:id="evalaluate_btn" layoutX="14.0" layoutY="532.0" mnemonicParsing="false" onAction="#evaluateDataset" prefHeight="35.0" prefWidth="275.0" style="-fx-opacity: 0.9; -fx-border-color: black; -fx-background-color: #00008B;" text="Evaluate the dataset" textFill="WHITE" visible="false">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Button>
-            <Button fx:id="save_btn" layoutX="324.0" layoutY="532.0" mnemonicParsing="false" onAction="#saveBtn" prefHeight="35.0" prefWidth="276.0" style="-fx-background-color: #2E8B57; -fx-border-color: black; -fx-opacity: 0.9;" text="Save" textFill="WHITE" visible="false">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Button>
          </children>
       </AnchorPane>
    </content>

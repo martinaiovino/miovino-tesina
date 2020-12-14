@@ -2,13 +2,12 @@ package project;
 
 import java.awt.Desktop;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.text.DateFormat;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Scanner;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -27,15 +26,13 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Hyperlink;
-import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.ToggleGroup;
-import javafx.scene.layout.Pane;
+import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -43,6 +40,7 @@ import javafx.stage.Stage;
 
 public class MainGUI extends Application {
 	private static TextArea txtArea = new TextArea();
+	private static TextArea txtDatasetArea = new TextArea();
 	private static VBox container = new VBox();
 	private static ComboBox<String> dateformat = new ComboBox<String>();
 	private Desktop desktop = Desktop.getDesktop();
@@ -50,17 +48,18 @@ public class MainGUI extends Application {
 	private static String configPath = "";
 	private static String configBackup = "";
 	private static String currentPath = Paths.get(".").toAbsolutePath().normalize().toString();
-    private static String selectedDateformat = "yyyy-MM-dd";
+    private static String selectedDateformat = "yyyy-MM-dd"; //date format - not used in GUI
 	
 	@SuppressWarnings("unchecked")
 	@Override
 	public void start(Stage stage) {
 		try {
 			// Get FXML file
-			Parent root = FXMLLoader.load(getClass().getResource("MainGUI2.fxml"));
+			Parent root = FXMLLoader.load(getClass().getResource("MainGUI.fxml"));
 			
 			// Size and title of the window
 			Scene scene = new Scene(root, 1196, 642);
+			stage.getIcons().add(new Image("file:" + currentPath + "\\resources\\icon.png"));
 	        stage.setTitle("DQ Evaluator");
 	        stage.setScene(scene);
 	        stage.show(); 
@@ -75,6 +74,7 @@ public class MainGUI extends Application {
 	        radio_importdataset.setToggleGroup(group);
 	        
 	        txtArea = (TextArea) scene.lookup("#text_area");
+	        txtDatasetArea = (TextArea) scene.lookup("#uploaded_dataset");
 	        container = (VBox) scene.lookup("#panecheckbox");
 	        // Add values to Combobox
 	        dateformat = (ComboBox<String>) scene.lookup("#dateformat");
@@ -94,9 +94,7 @@ public class MainGUI extends Application {
 	        
 	        dateformat.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal)->{
 	            if(newVal != null) { //if a new date format is selected, need to generate the configuration file again
-	            	//restartHidePanes(scene.getFocusOwner());
 	            	selectedDateformat = (String) newVal;
-	            	//System.out.println("!!" + selectedDateformat);
 	            }
 	        });
 	        	        
@@ -117,6 +115,8 @@ public class MainGUI extends Application {
 	                hyperselected.setText((String) newVal);
 	                hyperselected.setVisible(true);
 	                datasetPath = currentPath + "/resources/" + newVal;
+	                File file = new File(datasetPath);
+	                showDatasetFrame(file);
 	                
 	                String filex = newVal.toString();
 	                Hyperlink hyperselectedconf = (Hyperlink) scene.lookup("#selected_config");
@@ -127,7 +127,6 @@ public class MainGUI extends Application {
 	            }
 	        });
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -147,15 +146,18 @@ public class MainGUI extends Application {
 		selectedOption(node, false);
     }
 	
+	@SuppressWarnings("unchecked")
 	protected void selectedOption(Node node, Boolean isExisting) {
+		txtDatasetArea.setText("No dataset selected.");
 		node.getScene().lookup("#existing_datasets").setVisible(isExisting);
 		node.getScene().lookup("#upload_pane").setVisible(true);
+		node.getScene().lookup("#upload_pane1").setVisible(isExisting);
 		node.getScene().lookup("#upload_dataset").setDisable(isExisting);
 		node.getScene().lookup("#upload_config").setDisable(isExisting);
 		node.getScene().lookup("#generate_config").setDisable(true);
 		((Hyperlink) node.getScene().lookup("#selected_dataset")).setText("");
 		((Hyperlink) node.getScene().lookup("#selected_config")).setText("");
-		((ComboBox) node.getScene().lookup("#existing_datasets")).setValue(null);
+		((ComboBox<String>) node.getScene().lookup("#existing_datasets")).setValue(null);
 		datasetPath = "";
 		configPath = "";
 		restartHidePanes(node);
@@ -227,23 +229,6 @@ public class MainGUI extends Application {
           	configBackup = gson.toJson(je); //configuration file backup in case it will be filtered
           	txtArea.setDisable(false);
         	txtArea.setText(configBackup);
-            
-        	//display as many checkboxes as the datatypes found in the dataset
-        	Label filtersText = new Label("FILTERS:");
-        	filtersText.setStyle("-fx-font-weight: bold; -fx-padding: 2 2 2 5;");
-        	List<CheckBox> checkBoxes = new ArrayList<>();
-            node.getScene().lookup("#scrollpanecheckbox").setVisible(true);
-            dt.keySet().forEach(keyStr ->
-            {
-                CheckBox c = new CheckBox((String) keyStr); 
-            	c.setSelected(true);
-            	c.setStyle("-fx-padding: 2 2 2 5;");
-                checkBoxes.add(c);
-            });
-            container.getChildren().clear();
-            container.getChildren().addAll(filtersText);
-            container.getChildren().addAll(checkBoxes);
-            node.getScene().lookup("#apply_btn").setVisible(true);
             node.getScene().lookup("#evaluate_btn").setVisible(false);
             node.getScene().lookup("#save_btn").setVisible(true);
         } catch (Exception e) { //FileNotFoundException
@@ -267,17 +252,38 @@ public class MainGUI extends Application {
             
             if (addToPath == "") { //upload dataset file selected
             	node.getScene().lookup("#generate_config").setDisable(false);
+            	node.getScene().lookup("#upload_pane1").setVisible(true);
+            	showDatasetFrame(file);
             	restartHidePanes(node);
             }
         }
         return returnPath;
 	}
 	
+	protected void showDatasetFrame(File file) {
+		dateformat.setDisable(false);
+		try {
+			//File myObj = new File("filename.txt");
+		    Scanner myReader = new Scanner(file);
+		    int count = 0;
+		    String data = "";
+		    while (myReader.hasNextLine() && count < 11) {
+		    	data += myReader.nextLine();
+		    	if (count < 10) {
+		    		data += "\n";
+		    	}
+		        count++;
+		      }
+		      txtDatasetArea.setText(data);
+		      myReader.close();
+		    } catch (FileNotFoundException e) {
+		      System.out.println("An error occurred.");
+		      e.printStackTrace();
+		    }
+	}
+	
 	protected void restartHidePanes(Node node) {
-		//node.getScene().lookup("#evalaluate_btn").setVisible(false);
     	node.getScene().lookup("#save_btn").setVisible(false);
-    	node.getScene().lookup("#apply_btn").setVisible(false);
-    	node.getScene().lookup("#scrollpanecheckbox").setVisible(false);
     	txtArea.setText("No data to display.");
     	txtArea.setDisable(true);
     	checkDatasetConfig(node);
@@ -317,9 +323,6 @@ public class MainGUI extends Application {
             
             node.getScene().lookup("#evaluate_btn").setVisible(true);
             node.getScene().lookup("#save_btn").setVisible(false);
-            //txtArea.setVisible(false);
-            node.getScene().lookup("#scrollpanecheckbox").setVisible(false);
-            node.getScene().lookup("#apply_btn").setVisible(false);
         }
 	}
 	
@@ -341,6 +344,7 @@ public class MainGUI extends Application {
     	txtArea.setText(prettyJsonString);
 	}
 	
+	@SuppressWarnings("unchecked")
 	private static JSONObject removeElement(JSONObject editedConfigFile, String key) {
 		JSONObject valrange = (JSONObject) editedConfigFile.get("values_range");
 		valrange.put(key, editedConfigFile.remove(key));
@@ -381,13 +385,10 @@ public class MainGUI extends Application {
           	JsonElement je = jp.parse(result.toString());
           	String prettyJsonString = gson.toJson(je);
           	
-          	//Node node = (Node) event.getSource();
-          	//TextArea txtArea = (TextArea) node.getScene().lookup("#text_area");
           	txtArea.setDisable(false);
         	txtArea.setText(prettyJsonString);
         	Node node = (Node) event.getSource();
         	node.getScene().lookup("#save_btn").setVisible(true);
-			//System.out.println(result);
 		} else {
 			System.out.println("Files not found");
 		}

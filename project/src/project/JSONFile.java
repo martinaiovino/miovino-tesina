@@ -2,8 +2,6 @@ package project;
 
 import java.io.File;
 import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,7 +25,6 @@ public class JSONFile {
 	/* Method to read a json file. It returns an object.
 	 * This method will be used for reading both configuration and dataset files. */
 	public static Object readFile(String filePath) {
-		//System.out.println("File to analyse: " + fileName);
         try
         {
         	File f = new File(filePath); // look for the file
@@ -167,18 +164,6 @@ public class JSONFile {
     	DQEvaluator.put(sourceType, sourcetype);
     	
     	System.out.println(DQEvaluator.toString());
-		/*
-    	try {
-            // Constructs a FileWriter given a file name, using the platform's default charset
-            FileWriter file = new FileWriter("resources/d.json");
-            file.write(DQEvaluator.toJSONString());
-            file.flush();
-            file.close();
-            System.out.println("File saved! Refresh the resources folder");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        */
     	return DQEvaluator.toJSONString();
 	}
 	
@@ -265,15 +250,11 @@ public class JSONFile {
 		// Get values_range from the configuration object
 		JSONObject valuesRangeObj = (JSONObject) configJSONObject.get("values_range");
 		for (Object v : valuesRangeObj.keySet()) { // iterate inside the values_range
-			//System.out.println("!!" + v);
-			//System.out.println("key: " + v); // key
 			JSONObject subval = (JSONObject) valuesRangeObj.get(v);
-			//System.out.println("!!" + subval);
-			//System.out.print("interval: " + subval.get("interval")); //get the interval corresponding to that key
-			
+
 			// Building up the arrays of booleans for accuracy categ, float, not null and distance
 			if (subval.get("interval") instanceof JSONObject) { // case 1: interval is a min-max
-				//System.out.println(" MIN-MAX");
+				//min-max
 				JSONObject subv = (JSONObject) subval.get("interval");
 				Double minvalue = Double.parseDouble(subv.get("min").toString()); //minimum value
 				Double maxvalue = Double.parseDouble(subv.get("max").toString()); //maximum value
@@ -297,7 +278,7 @@ public class JSONFile {
 					}
 				}	
 			} else { // case 2: interval is an array of values
-				//System.out.println(" ARRAY");
+				//array
 				String arrayToString = subval.get("interval").toString();
 				String arrayEdits = arrayToString.substring(1, arrayToString.length() - 1).replace("\"", "");
 				String[] valuesRange = arrayEdits.split(",");
@@ -361,11 +342,9 @@ public class JSONFile {
 				try {
 					for (Object v : separewin[i][j].keySet()) {
 						try {
-						//System.out.println("i " + i + " j " + j);
-						//System.out.println("KEYY: " + v);
 						JSONObject subval = (JSONObject) valuesRangeObj.get(v);
 						if (subval.get("interval") instanceof JSONObject) {
-							//System.out.println(" MIN-MAX");
+							//min-max
 							JSONObject subv = (JSONObject) subval.get("interval");
 							Double minvalue = Double.parseDouble(subv.get("min").toString()); //minimum value
 							Double maxvalue = Double.parseDouble(subv.get("max").toString()); //maximum value
@@ -376,7 +355,7 @@ public class JSONFile {
 								arrayBoolNotNull.add(false);
 							}
 						} else {
-							//System.out.println(" ARRAY");
+							//array
 							String arrayToString = subval.get("interval").toString();
 							String arrayEdits = arrayToString.substring(1, arrayToString.length() - 1).replace("\"", "");
 							String[] valuesRange = arrayEdits.split(",");
@@ -417,7 +396,7 @@ public class JSONFile {
 		timeliness_evaluation = timeliness(configJSONObject, datasetJSONArray, dateformat);
 	}
 	
-	/*----------------         MAIN             ----------------*/
+	/*----------------         MAIN  - not used          ----------------*/
 	public static void main (String[] args) {
 		
 		// Read the dataset and configuration files
@@ -452,9 +431,7 @@ public class JSONFile {
 		}
 	}
 	
-	/************************************************************************************
-	 * **********************************************************************************
-	 * **********************************************************************************/
+
 	public static void prepare_consistency (JSONObject configJSONObject, JSONArray dataset) {
 		try {
 		JSONArray associationRules = (JSONArray) configJSONObject.get("association_rules");
@@ -524,12 +501,6 @@ public class JSONFile {
 						}
 					}
 				}
-				/*if(elem.contains("\",\"")) {
-					String[] subelems = elem.split("\",\"");
-					for (String i : subelems) {
-						System.out.println(i);
-					}
-				}*/
 			}
 			int correct = 0;
 			for (int i = 0; i < array.length; i++) {
@@ -538,7 +509,6 @@ public class JSONFile {
 				}
 			}
 			consistency.add((double) correct/array.length);
-			//System.out.println((double) correct/array.length);
 		}
 		double sum = 0;
 		for (int i = 0; i < consistency.size(); i++) {
@@ -550,7 +520,4 @@ public class JSONFile {
 			System.out.println("Association rules not found");
 		}
 	}
-	/************************************************************************************
-	 * **********************************************************************************
-	 * **********************************************************************************/
 }
